@@ -1,6 +1,10 @@
 #!/bin/bash
 
-where="/media/$(whoami)"
+# this might be difference on every system, the lazy, bad way to do it is this
+where="/media"
+if [ "$HOSTNAME" == "Precisix" ]; then
+	where="/media/$(whoami)"
+fi
 
 for label in $(ls /dev/disk/by-label | grep -v System); do
 	if [ "$label" != "boot" ]; then
