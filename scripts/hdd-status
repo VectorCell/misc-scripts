@@ -1,0 +1,12 @@
+#!/bin/bash
+
+for disk in $(ls /dev/sd* | grep '[a-z]$'); do
+	assessment=$(sudo smartctl $disk -H | grep self-assessment)
+	if [ $? == 0 ]; then
+		echo $disk
+		echo "$assessment"
+		tempC=$(sudo smartctl $disk --all | grep Temperature | rev | awk '{print $1}' | rev)
+		printf "Temperature: %d degrees C\n" $tempC
+		echo
+	fi
+done
