@@ -1,0 +1,44 @@
+#!/bin/bash
+
+where="/media/$(whoami)"
+
+for label in $(ls /dev/disk/by-label | grep -v System); do
+	if [ "$label" != "boot" ]; then
+		disk=$(readlink -f /dev/disk/by-label/$label)
+		if [ -z "$(df | grep $disk)" ]; then
+			fsline=$(sudo fdisk -l | grep $disk)
+
+			echo "mounting $label ($disk) at $where/$label ..."
+
+			type="other"
+			if [ -n "$(echo $fsline | grep FAT32)" ]; then
+				type="vfat"
+			fi
+			if [ -n "$(echo $fsline | grep NTFS)" ]; then
+				type="ntfs"
+			fi
+
+			if [ ! -d $where/$label ]; then
+				sudo mkdir $where/$label
+			fi
+
+			if [ "$type" != "other" ]; then
+				sudo mount -t $type $disk $where/$label -o uid=$(id -u bismith),gid=$(id -g bismith),utf8,dmask=022,fmask=133
+			else
+				sudo mount $disk $where/$label
+			fi
+		else
+			echo "skipping $label ($disk), already mounted"
+		fi
+	fi
+done
+
+# cleans up unused directories
+for label in $(ls $where); do
+	if [ $(stat -c "%u" $where/$label) == $(id -u root) ]; then
+		echo "removing unused directory $where/$label"
+		sudo rmdir $where/$label
+	fi
+done
+
+tmux refresh-client -S

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+localuser="$(whoami)"
+
+read -p "Server: " server
+read -p "Share: " share
+read -p "Username: " username
+read -p "Password: " password
+
+# mounts Brandon2TB
+if [ $(id -u) == $(stat -c "%u" /mnt/$share) ]
+then
+        echo "/mnt/$share already mounted, owned by $localuser"
+else
+        echo "mounting /mnt/$share ..."
+        sudo mount -t cifs //$server/$share -o username=$username,password=$password,uid=$(id -u $localuser),gid=$(id -g $localuser) /mnt/$share
+fi
+

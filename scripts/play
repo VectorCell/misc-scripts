@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# plays fullscreen, exits when done, and caches 10 seconds
+vlc -f --play-and-exit --file-caching=10000 "$1"

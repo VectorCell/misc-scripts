@@ -1,0 +1,20 @@
+#!/bin/bash
+
+mountdir="/mnt/ramdisk"
+
+size=1048
+if [ -n "$1" ]; then
+	size="$1"
+fi
+
+if [ ! -d $mountdir ]; then
+	sudo mkdir $mountdir
+fi
+
+# mounts yoga share
+if [ $(id -u) == $(stat -c "%u" /mnt/ramdisk) ]; then
+	echo "/mnt/ramdisk already mounted, owned by bismith"
+else
+	echo "mounting /mnt/ramdisk with $size MB..."
+	sudo mount -t tmpfs -o size=${size}m tmpfs /mnt/ramdisk -o uid=$(id -u bismith),gid=$(id -g bismith)
+fi

@@ -1,2 +1,3 @@
 # misc-scripts
-A collection of one-off scripts and stuff.
+
+A collection of one-off scripts and such.

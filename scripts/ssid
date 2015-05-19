@@ -1,0 +1,3 @@
+#!/bin/bash
+
+iwconfig wlan0 | grep ESSID | colrm 1 33 | awk '{split($0,array,"\"")} END{print array[1]}'
