@@ -13,7 +13,7 @@ else
 	if [ $(stat -c "%u" $mountdir) == $(id -u $user) ]; then
 		echo "$mountdir already mounted, owned by $user"
 	else
-		echo "mounting $mountdir ($server:$dironserver) ..."
+		echo "mounting $mountdir ($server:$serverdir) ..."
 		sudo sshfs ${user}@${server}:$serverdir $mountdir -o uid=$(id -u $user),gid=$(id -g $user),allow_other,IdentityFile=/home/$user/.ssh/id_rsa
 	fi
 fi
