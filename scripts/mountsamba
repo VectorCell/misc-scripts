@@ -7,6 +7,10 @@ read -p "Share: " share
 read -p "Username: " username
 read -p "Password: " password
 
+if [ ! -d /mnt/$share ]; then
+	sudo mkdir /mnt/$share
+fi
+
 # mounts Brandon2TB
 if [ $(id -u) == $(stat -c "%u" /mnt/$share) ]
 then

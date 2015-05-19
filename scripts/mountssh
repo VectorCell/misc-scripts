@@ -10,6 +10,10 @@ else
 	serverdir="$2"
 	mountdir="$3"
 
+	if [ ! -d $mountdir ]; then
+		sudo mkdir $mountdir
+	fi
+
 	if [ $(stat -c "%u" $mountdir) == $(id -u $user) ]; then
 		echo "$mountdir already mounted, owned by $user"
 	else
