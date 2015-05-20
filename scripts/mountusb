@@ -10,7 +10,7 @@ for label in $(ls /dev/disk/by-label | grep -v System); do
 	if [ "$label" != "boot" ]; then
 		disk=$(readlink -f /dev/disk/by-label/$label)
 		if [ -z "$(df | grep $disk)" ]; then
-			fsline=$(sudo fdisk -l | grep $disk)
+			fsline=$(sudo fdisk $disk -l | grep $disk)
 
 			echo "mounting $label ($disk) at $where/$label ..."
 
