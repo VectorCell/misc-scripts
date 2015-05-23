@@ -39,10 +39,11 @@ done
 
 # cleans up unused directories
 for label in $(ls $where); do
-	if [ $(stat -c "%u" $where/$label) == $(id -u root) ]; then
+	#if [ $(stat -c "%u" $where/$label) == $(id -u root) ]; then
+	if [ -z "$(df $where/$label 2> /dev/null)" ]; then
 		echo "removing unused directory $where/$label"
 		sudo rmdir $where/$label
 	fi
 done
 
-tmux refresh-client -S
+tmux refresh-client -S &> /dev/null
