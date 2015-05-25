@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# this might be difference on every system, the lazy, bad way to do it is this
+# this might be different on every system, the lazy, bad way to do it is this
+# eventually all machines should mount in /media/[user]
 where="/media"
-if [ "$HOSTNAME" == "Precisix" ]; then
+if [ "$HOSTNAME" == "Precisix" ] || [ "$HOSTNAME" == "Precision390" ]; then
 	where="/media/$(whoami)"
 fi
 
