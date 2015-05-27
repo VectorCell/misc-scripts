@@ -2,7 +2,7 @@
 
 A collection of one-off scripts and such.
 
-## Scripts
+(some of the) scripts:
 
 ### mountusb
 A script I wrote because I was want to have a way to quickly mount all unmounted volumes (usually USB drives or SD cards)
@@ -11,5 +11,41 @@ without having to mess with any fstab stuff because of the temporary nature of f
 Usage:
 ```
 mountusb [options]
+
+OPTIONS:
 	-t   performs a test run, without mounting or writing anything to disk
+```
+
+### mountramdisk
+Creates and mounts a temporary volume at `/mnt/ramdisk`, with a specified size in MB
+
+Usage:
+```
+mountramdisk [size]
+
+size defaults to 1024
+```
+
+### mountiso
+Mounts an iso file at `/mnt/iso`
+
+Usage:
+```
+mountiso file.iso
+```
+
+### mountssh
+Mounts a remote directoy using sshfs
+
+Usage:
+```
+mountssh [user@]address remotedir mountdir
+```
+
+### mountsamba
+Mounts a remote directoy using Samba
+
+Usage:
+```
+mountsamba
 ```
