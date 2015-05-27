@@ -1,12 +1,14 @@
 #!/bin/bash
 
+mountdir="/mnt/iso"
+
 file="$1"
 
 if [ ! -f "$file" ]; then
-	if [ ! -d /mnt/iso ]; then
-		sudo mkdir /mnt/iso
+	if [ ! -d "$mountdir" ]; then
+		sudo mkdir "$mountdir"
 	fi
-	sudo mount -o loop,ro,uid=$(id -u bismith),gid=$(id -g bismith) "$1" /mnt/iso
+	sudo mount -o loop,ro,uid=$(id -u),gid=$(id -g) "$1" "$mountdir"
 else
 	if [ -n "$file" ]; then
 		echo "file not found: $file"

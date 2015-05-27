@@ -12,9 +12,10 @@ if [ ! -d $mountdir ]; then
 fi
 
 # mounts yoga share
-if [ $(id -u) == $(stat -c "%u" /mnt/ramdisk) ]; then
-	echo "/mnt/ramdisk already mounted, owned by bismith"
+owner=$(stat -c "%u" $mountdir)
+if [ $(id -u) == $owner ]; then
+	echo "$mountdir already mounted, owned by $owner"
 else
-	echo "mounting /mnt/ramdisk with $size MB..."
-	sudo mount -t tmpfs -o size=${size}m tmpfs /mnt/ramdisk -o uid=$(id -u bismith),gid=$(id -g bismith)
+	echo "mounting $mountdir with $size MB..."
+	sudo mount -t tmpfs -o size=${size}m tmpfs $mountdir -o uid=$(id -u),gid=$(id -g)
 fi
