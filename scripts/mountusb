@@ -16,7 +16,7 @@ for label in $(ls /dev/disk/by-label | grep -v System); do
 			echo "mounting $label ($disk) at $where/$label ..."
 
 			type="other"
-			if [ -n "$(echo $fsline | grep FAT32)" ]; then
+			if [ -n "$(echo $fsline | grep FAT16)" ] || [ -n "$(echo $fsline | grep FAT32)" ]; then
 				type="vfat"
 			fi
 			if [ -n "$(echo $fsline | grep NTFS)" ]; then
