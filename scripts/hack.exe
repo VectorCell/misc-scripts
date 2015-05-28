@@ -58,6 +58,6 @@ for i in $(seq 1 65); do echo -n "="; sleep 0.01; done
 echo -e '>]\n'
 sleep 0.5
 echo -n "root@$1:~# "
-sleep 5
+sleep 3600
 echo ""
 exit 0
