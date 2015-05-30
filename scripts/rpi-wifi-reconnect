@@ -1,0 +1,34 @@
+#!/bin/bash
+
+interface="wlan0"
+pingaddr="google.com"
+
+# if this file exists, then this script is already running (hopefully)
+flagfile="/run/shm/rpi-wifi-reconnect.flag"
+if [ -f "$flagfile" ]; then
+	echo "ERROR: this script is already running on this system"
+	echo "If this isn't true, you should manually delete this file:"
+	echo "$flagfile"
+	exit 0
+else
+	touch "$flagfile"
+fi
+
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
+function ctrl_c() {
+	echo
+	echo "deleting $flagfile ..."
+	rm "$flagfile"
+	exit 0
+}
+
+while true; do
+	ping -c 1 $pingaddr &> /dev/null
+	if [ "$?" != "0" ]; then
+		echo "could not find $pingaddr at $(date)"
+		echo "attempting to reconnect wireless interface $interface ..."
+		echo sudo ifup --force $interface
+	fi
+	sleep 60
+done
