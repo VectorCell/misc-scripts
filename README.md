@@ -1,6 +1,7 @@
 # misc-scripts
 
 A collection of one-off scripts and such.
+Scripts prefixed with `rpi-` are designed for Raspbian running on a Raspberry Pi, and will not be installed on other systems by `install.sh`.
 
 (some of the) scripts:
 
