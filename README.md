@@ -50,3 +50,9 @@ Usage:
 ```
 mountsamba
 ```
+
+-------------------
+
+As usual with these kinds of things, here's the guarantee:
+
+![guarantee](http://i.imgur.com/ULWUPTp.jpg)
