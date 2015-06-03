@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# to be used in conjunction with VeraCrypt
+
+# usage: mountvc file/volume [mountpoint]
+
+if [ -z "$(which veracrypt)" ]; then
+	echo "ERROR: couldn't find veracrypt in the path!"
+	exit 1
+fi
+
+file="$1"
+mountdir="$2"
+if [ ! -f "$file" ]; then
+	echo "ERROR: couldn't find $file"
+	exit 1
+fi
+if [ -z "$mountdir" ]; then
+	mountdir="/mnt/encrypted"
+fi
+if [ ! -d "$mountdir" ]; then
+	sudo mkdir "$mountdir"
+fi
+
+echo "mounting $file at $mountdir ... "
+veracrypt --mount --fs-options="users,uid=$(id -u),gid=$(id -g),fmask=0113,dmask=002" "$file" "$mountdir"
