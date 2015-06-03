@@ -34,7 +34,7 @@ while true; do
 	if [ "$?" != "0" ]; then
 		echo "could not find $pingaddr at $(date)"
 		echo "attempting to reconnect wireless interface $interface ..."
-		echo sudo ifup --force $interface
+		sudo ifup --force $interface
 	fi
 	sleep 60
 	if [ -f "$flagfile" ]; then
