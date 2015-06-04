@@ -81,8 +81,8 @@ for label in $(ls /dev/disk/by-label | grep -v System); do
 					fi
 				fi
 			fi
-		else
-			echo "skipping $label ($disk), already mounted"
+#		else
+#			echo "skipping $label ($disk), already mounted"
 		fi
 	fi
 done
