@@ -11,7 +11,7 @@ fi
 
 file="$1"
 mountdir="$2"
-if [ ! -f "$file" ]; then
+if [ ! -e "$file" ]; then
 	echo "ERROR: couldn't find $file"
 	exit 1
 fi
