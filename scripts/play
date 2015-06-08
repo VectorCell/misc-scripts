@@ -1,4 +1,11 @@
 #!/bin/bash
 
-# plays fullscreen, exits when done, and caches 10 seconds
-vlc -f --play-and-exit --file-caching=10000 "$1"
+if [ -n "$(which omxplayer)" ]; then
+	# prefer omxplayer
+	omxplayer -b -o hdmi "$1"
+elif [ -n "$(which vlc)" ]; then
+	vlc -f --play-and-exit --file-caching=10000 "$1"
+else
+	1>&2 echo "no suitable player found"
+	exit 1
+fi
