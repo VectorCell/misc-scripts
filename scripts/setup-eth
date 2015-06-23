@@ -1,0 +1,11 @@
+#!/bin/bash
+
+num=0
+
+if [ "$HOSTNAME" == "PiOne" ]; then num=1; fi
+if [ "$HOSTNAME" == "PiTwo" ]; then num=2; fi
+if [ "$HOSTNAME" == "ENIAC" ]; then num=3; fi
+if [ "$HOSTNAME" == "Precisix" ]; then num=4; fi
+if [ "$HOSTNAME" == "Yogix" ]; then num=5; fi
+
+sudo ifconfig eth0 192.168.255.$num broadcast 192.168.255.255 netmask 255.255.255.0
