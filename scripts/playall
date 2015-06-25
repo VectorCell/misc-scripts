@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# trap ctrl-c and call ctrl_c()
-trap exitcleanly INT
-
+trap exitcleanly SIGINT
 function exitcleanly() {
 	rm $playlist $script
 	exit 0
