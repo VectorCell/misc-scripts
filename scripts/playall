@@ -1,0 +1,23 @@
+#!/bin/bash
+
+rand="$RANDOM"
+
+playlist="/run/shm/playall-playlist-$rand.m3u"
+script="/run/shm/playall-script-$rand.sh"
+
+echo "loading playlist ..."
+input="$1"
+if [ -d "$input" ]; then
+	find "$input" -type f | sort | pv > $playlist
+else
+	pv < "$input" > $playlist
+fi
+
+echo -en "#/bin/bash\n" > $script
+cat $playlist | while read line; do
+	echo -e "omxplayer -b -o hdmi \"$file\""
+done
+
+bash $script
+
+rm $playlist $script
