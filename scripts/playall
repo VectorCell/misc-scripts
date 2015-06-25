@@ -15,7 +15,9 @@ fi
 
 echo -en "#/bin/bash\n" > $script
 cat $playlist | while read line; do
-	echo -e "omxplayer -b -o hdmi \"$file\"" >> $script
+	echo -e "clear" >> $script
+	echo -e "echo \"$line\"" >> $script
+	echo -e "omxplayer -b -o hdmi \"$line\"" >> $script
 done
 
 bash $script
