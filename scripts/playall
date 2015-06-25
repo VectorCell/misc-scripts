@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# trap ctrl-c and call ctrl_c()
+trap exitcleanly INT
+
+function exitcleanly() {
+	rm $playlist $script
+	exit 0
+}
+
 rand="$RANDOM"
 
 playlist="/run/shm/playall-playlist-$rand.m3u"
@@ -7,12 +15,16 @@ script="/run/shm/playall-script-$rand.sh"
 
 echo "loading playlist ..."
 input="$1"
+if [ -z "$input" ]; then
+	input="."
+fi
 if [ -d "$input" ]; then
-	find "$input" -type f | sort | pv > $playlist
+	find "$input" -type f | grep -E "avi$|mp4$|mkv$" | sort > $playlist
 else
-	pv < "$input" > $playlist
+	cat "$input" > $playlist
 fi
 
+echo "playlist files ..."
 echo -en "#/bin/bash\n" > $script
 cat $playlist | while read line; do
 	echo -e "clear" >> $script
@@ -22,4 +34,4 @@ done
 
 bash $script
 
-rm $playlist $script
+exitcleanly
