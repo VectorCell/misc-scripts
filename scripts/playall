@@ -23,11 +23,14 @@ else
 fi
 
 echo "playlist files ..."
-echo -en "#/bin/bash\n" > $script
+echo -e "#/bin/bash\n" > $script
+echo -e "tempfile=\"~/Video/tempfile.mkv\""
 cat $playlist | while read line; do
 	echo -e "clear" >> $script
 	echo -e "echo \"$line\"" >> $script
-	echo -e "omxplayer -b -o hdmi \"$line\"" >> $script
+	echo -e "pv < \"$line\" > \$tempfile" >> $script
+	echo -e "omxplayer -b -o hdmi \"\$tempfile\"" >> $script
+	echo -e "rm \$tempfile"
 done
 
 bash $script
