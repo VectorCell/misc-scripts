@@ -24,13 +24,14 @@ fi
 
 echo "playlist files ..."
 echo -e "#/bin/bash\n" > $script
-echo -e "tempfile=\"~/Video/tempfile.mkv\"" >> $script
+echo -e "tempfile=\"\$HOME/Videos/tempfile.mkv\"\n" >> $script
 cat $playlist | while read line; do
 	echo -e "clear" >> $script
 	echo -e "echo \"$line\"" >> $script
+	#echo -e "touch \$tempfile\n" >> $script
 	echo -e "pv < \"$line\" > \$tempfile" >> $script
 	echo -e "omxplayer -b -o hdmi \"\$tempfile\"" >> $script
-	echo -e "rm \$tempfile" >> $script
+	echo -e "rm \$tempfile\n" >> $script
 done
 
 bash $script
