@@ -8,8 +8,11 @@ function exitcleanly() {
 
 rand="$RANDOM"
 
-playlist="/run/shm/playall-playlist-$rand.m3u"
-script="/run/shm/playall-script-$rand.sh"
+playlist="/run/shm/playall-playlist.m3u"
+script="/run/shm/playall-script.sh"
+#playlist="/run/shm/playall-playlist-$rand.m3u"
+#script="/run/shm/playall-script-$rand.sh"
+rm -f $playlist $script
 
 echo "loading playlist ..."
 input="$1"
@@ -27,7 +30,7 @@ echo -e "#/bin/bash\n" > $script
 cat $playlist | while read line; do
 	echo -e "\nclear" >> $script
 	echo -e "echo \"$line\"" >> $script
-	echo -e "omxplayer -b -o hdmi \"\$line\"" >> $script
+	echo -e "omxplayer -b -o hdmi \"$line\"" >> $script
 done
 
 bash $script
