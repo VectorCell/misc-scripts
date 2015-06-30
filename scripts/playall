@@ -24,18 +24,11 @@ fi
 
 echo "playlist files ..."
 echo -e "#/bin/bash\n" > $script
-echo -e "previous=\"\$HOME/Videos/previous.mkv\"\n" >> $script
-echo -e "current=\"\$HOME/Videos/current.mkv\"\n" >> $script
 cat $playlist | while read line; do
 	echo -e "\nclear" >> $script
 	echo -e "echo \"$line\"" >> $script
-	echo -e "pv < \"$line\" > \$current &" >> $script
-	echo -e "omxplayer -b -o hdmi \"\$previous\"" >> $script
-	echo -e "wait" >> $script
-	echo -e "rm \$previous" >> $script
-	echo -e "mv \$current \$previous" >> $script
+	echo -e "omxplayer -b -o hdmi \"\$line\"" >> $script
 done
-echo -e "rm \$previous\n" >> $script
 
 bash $script
 
