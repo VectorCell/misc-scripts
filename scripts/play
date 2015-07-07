@@ -4,6 +4,9 @@ if [ -n "$(which omxplayer)" ]; then
 	# prefer omxplayer
 	omxplayer -b -o hdmi "$1"
 elif [ -n "$(which vlc)" ]; then
+	if [ -n "$DISPLAY" ]; then
+		export DISPLAY=:0
+	fi
 	vlc -f --play-and-exit --file-caching=10000 "$1"
 else
 	1>&2 echo "no suitable player found"
