@@ -1,14 +1,29 @@
 #!/bin/bash
 
-if [ -n "$(which omxplayer)" ]; then
-	# prefer omxplayer
-	omxplayer -b -o hdmi "$1"
-elif [ -n "$(which vlc)" ]; then
+get_display() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
+}
+
+if [ -z "$1" ]; then
+	1>&2 echo "must specify file"
+	exit 1
+elif [ ! -e "$1" ]; then
+	1>&2 echo "file not found: $1"
+	exit 1
+fi
+
+if [ -n "$(which omxplayer)" ]; then
+	omxplayer -b -o hdmi "$1"
+elif [ -n "$(which vlc)" ]; then
+	set_display
 	vlc -f --play-and-exit --file-caching=10000 "$1"
+elif [ -n "$(which mplayer)" ]; then
+	set_display
+	resolution=$(xrandr | grep \* | awk '{print $1}' | tr 'x' ':')
+	mplayer -vo gl2 -fs -vf expand=$resolution "$1"
 else
 	1>&2 echo "no suitable player found"
-	exit 1
+	exit 2
 fi
