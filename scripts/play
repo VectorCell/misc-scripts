@@ -21,8 +21,7 @@ elif [ -n "$(which vlc)" ]; then
 	vlc -f --play-and-exit --file-caching=10000 "$1"
 elif [ -n "$(which mplayer)" ]; then
 	set_display
-	resolution=$(xrandr | grep \* | awk '{print $1}' | tr 'x' ':')
-	mplayer -vo gl2 -fs -vf expand=$resolution "$1"
+	mplayer -fs "$1"
 else
 	1>&2 echo "no suitable player found"
 	exit 2
