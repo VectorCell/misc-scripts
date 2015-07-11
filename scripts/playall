@@ -30,7 +30,7 @@ echo -e "#/bin/bash\n" > $script
 cat $playlist | while read line; do
 	echo -e "\nclear" >> $script
 	echo -e "echo \"$line\"" >> $script
-	echo -e "omxplayer -b -o hdmi \"$line\"" >> $script
+	echo -e "play \"$line\"" >> $script
 done
 
 bash $script
