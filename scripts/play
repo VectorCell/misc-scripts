@@ -3,6 +3,8 @@
 get_display() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
+	else
+		echo "display already set: $DISPLAY"
 	fi
 }
 
