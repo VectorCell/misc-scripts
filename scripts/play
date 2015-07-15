@@ -1,6 +1,6 @@
 #!/bin/bash
 
-get_display() {
+set_display() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	else
