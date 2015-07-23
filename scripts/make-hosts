@@ -69,7 +69,7 @@ else
 			while read line; do
 				echo "$line"
 				if [ "$(echo $line | colrm 21)" == "Nmap scan report for" ]; then
-					addr=$(echo $line | awk '{print $5}')
+					addr=$(echo $line | rev | awk '{print $1}' | rev | tr -d '()')
 					if [ -n "$all" ]; then
 						all="$all $addr"
 					else
@@ -79,7 +79,7 @@ else
 			done <<< "$nmapout"
 			for addr in $(echo $all | tr ' ' '\n'); do
 				echo "checking: $addr"
-				hostname=$(ssh -o "StrictHostKeyChecking no" $addr "hostname" | tr '[:upper:]' '[:lower:]')
+				hostname=$(ssh -o "StrictHostKeyChecking no -o ConnectTimeout=10 -o BatchMode=yes" $addr "hostname" | tr '[:upper:]' '[:lower:]')
 				if [ -n "$hostname" ]; then
 					echo "found hostname: $hostname"
 					tld="local"
