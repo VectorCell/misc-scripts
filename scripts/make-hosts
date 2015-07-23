@@ -114,5 +114,5 @@ else
 	fi
 fi
 
-echo sudo chmod 644 $hostsfile
+sudo chmod 644 $hostsfile
 
