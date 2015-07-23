@@ -1,0 +1,124 @@
+#!/bin/bash
+
+hostsfile="/etc/hosts"
+backup="/etc/hosts-original"
+tempfile="/run/shm/hosts-$RANDOM"
+
+signature="#created by make-hosts"
+
+restore="false"
+force="false"
+subnetlan="192.168.0.0/24"
+subnetvpn="10.0.0.0/24"
+
+while [[ $# > 0 ]]; do
+	arg="$1"
+	case $arg in
+		-s)
+		subnetlan="$2"
+		shift
+		;;
+		-v)
+		subnetvpn="$2"
+		shift
+		;;
+		-f)
+		force="true"
+		;;
+		--restore)
+		restore="true"
+		;;
+		*)
+		# unknown option
+		;;
+	esac
+	shift # past argument or value
+done
+
+if [ "$whoami" != root ]; then
+	echo "ERROR: you can only modify $hostsfile if you are root!"
+	#exit 1
+	echo "For debugging purposes, will continue in dry-run mode"
+fi
+
+if [ -z "$(which nmap)" ]; then
+	echo "ERROR: you need nmap installed"
+	echo "make sure that nmap is installed and in your path"
+	exit 1
+fi
+
+if [ "$restore" == true ]; then
+	echo "TO-DO: code to restore from backup"
+	if [ ! -e "$backup" ]; then
+		echo "ERROR: $backup does not exist, can't restore it!"
+		exit 1
+	fi
+	sudo rm $hostsfile
+	sudo mv $backup $hostsfile
+else
+	if [ -e "$backup" ] && [ "$force" == false ]; then
+		echo "ERROR: cannot continue while there is an existing backup at $backup"
+		echo "To restore $hostsfile from that backup, run make-hosts --restore"
+		echo "To throw all caution to the wind and do it anyway, run make-hosts -f"
+		exit 1
+	else
+		sudo cp $hostsfile $backup
+		echo "$signature" >> $tempfile
+		printf "\n\n" >> $tempfile
+		cat $hostsfile >> $tempfile
+		printf "\n\n" >> $tempfile
+
+		for subnet in $(echo $subnetlan; echo $subnetvpn); do
+			echo "scanning subnet $subnet ..."
+			all=""
+			nmapout=$(nmap -sP "$subnet")
+			echo
+			while read line; do
+				echo "$line"
+				if [ "$(echo $line | colrm 21)" == "Nmap scan report for" ]; then
+					addr=$(echo $line | awk '{print $5}')
+					if [ -n "$all" ]; then
+						all="$all $addr"
+					else
+						all=$addr
+					fi
+				fi
+			done <<< "$nmapout"
+			for addr in $(echo $all | tr ' ' '\n'); do
+				echo "checking: $addr"
+				hostname=$(ssh -o "StrictHostKeyChecking no" $addr "hostname" | tr '[:upper:]' '[:lower:]')
+				if [ -n "$hostname" ]; then
+					echo "found hostname: $hostname"
+					tld="local"
+					if [ "$subnet" == "$subnetvpn" ]; then
+						tld="vpn"
+					fi
+					echo "adding entry as $hostname.$tld"
+					echo -e "$addr\t$hostname.$tld" >> $tempfile
+				else
+					echo "hostname not found"
+				fi
+				echo
+			done
+		done
+
+		read -p "Press enter to review the changes to $hostsfile ..."
+		less $tempfile
+		echo "You are about to replace $hostsfile"
+		while true; do
+		read -p "Do you wish to commit the changes? [y/n]:" yn
+			case $yn in
+				[Yy]* ) break;;
+				[Nn]* ) echo "not changing $hostsfile, exiting ..."; rm $tempfile; exit;;
+				* ) echo "Please answer yes or no.";;
+			esac
+		done
+
+		sudo rm $hostsfile
+		sudo cp $tempfile $hostsfile
+		rm $tempfile
+	fi
+fi
+
+echo sudo chmod 644 $hostsfile
+
