@@ -35,12 +35,6 @@ while [[ $# > 0 ]]; do
 	shift # past argument or value
 done
 
-if [ "$whoami" != root ]; then
-	echo "ERROR: you can only modify $hostsfile if you are root!"
-	#exit 1
-	echo "For debugging purposes, will continue in dry-run mode"
-fi
-
 if [ -z "$(which nmap)" ]; then
 	echo "ERROR: you need nmap installed"
 	echo "make sure that nmap is installed and in your path"
