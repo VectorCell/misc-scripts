@@ -12,7 +12,7 @@ fi
 echo "This script should be run from the directory where it resides."
 
 echo "This script will overwrite the following files (if they exist):"
-for file in $(ls $scriptdir | grep -v "$filter" | grep -v "*.vbs"); do
+for file in $(ls $scriptdir | grep -v "$filter" | grep -v ".vbs"); do
 	if [ -e "$bindir/$file" ]; then
 		echo -n "*"
 	fi
