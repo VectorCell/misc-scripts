@@ -42,7 +42,6 @@ if [ -z "$(which nmap)" ]; then
 fi
 
 if [ "$restore" == true ]; then
-	echo "TO-DO: code to restore from backup"
 	if [ ! -e "$backup" ]; then
 		echo "ERROR: $backup does not exist, can't restore it!"
 		exit 1
