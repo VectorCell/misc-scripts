@@ -79,7 +79,7 @@ else
 			done <<< "$nmapout"
 			for addr in $(echo $all | tr ' ' '\n'); do
 				echo "checking: $addr"
-				hostname=$(ssh -o "StrictHostKeyChecking no -o ConnectTimeout=10 -o BatchMode=yes" $addr "hostname" | tr '[:upper:]' '[:lower:]')
+				hostname=$(ssh -o StrictHostKeyChecking no -o ConnectTimeout=10 -o BatchMode=yes $addr "hostname" | tr '[:upper:]' '[:lower:]')
 				if [ -n "$hostname" ]; then
 					echo "found hostname: $hostname"
 					tld="local"
