@@ -7,9 +7,15 @@ tempfile="/run/shm/hosts-$RANDOM"
 signature="#created by make-hosts"
 
 restore="false"
-force="false"
+nobackup="false"
+refresh="false"
+
 subnetlan="192.168.0.0/24"
 subnetvpn="10.0.0.0/24"
+
+function getsubneturl {
+	echo "http://vpn.bismith.net/subnets/subnet-$(echo $1 | tr '/' '-').txt"
+}
 
 while [[ $# > 0 ]]; do
 	arg="$1"
@@ -22,8 +28,11 @@ while [[ $# > 0 ]]; do
 		subnetvpn="$2"
 		shift
 		;;
-		-f)
-		force="true"
+		--refresh)
+		refresh="true"
+		;;
+		--nobackup)
+		nobackup="true"
 		;;
 		--restore)
 		restore="true"
@@ -49,50 +58,61 @@ if [ "$restore" == true ]; then
 	sudo rm $hostsfile
 	sudo mv $backup $hostsfile
 else
-	if [ -e "$backup" ] && [ "$force" == false ]; then
+	if [ -e "$backup" ] && [ "$nobackup" == false ]; then
 		echo "ERROR: cannot continue while there is an existing backup at $backup"
 		echo "To restore $hostsfile from that backup, run make-hosts --restore"
-		echo "To throw all caution to the wind and do it anyway, run make-hosts -f"
+		echo "To throw all caution to the wind and do it anyway, run make-hosts --nobackup"
 		exit 1
 	else
-		sudo cp $hostsfile $backup
+		if [ "$nobackup" == false ]; then
+			sudo cp $hostsfile $backup
+		fi
 		echo "$signature" >> $tempfile
 		printf "\n\n" >> $tempfile
 		cat $hostsfile >> $tempfile
 		printf "\n\n" >> $tempfile
 
 		for subnet in $(echo $subnetlan; echo $subnetvpn); do
-			echo "scanning subnet $subnet ..."
-			all=""
-			nmapout=$(nmap -sP "$subnet")
-			echo
-			while read line; do
-				echo "$line"
-				if [ "$(echo $line | colrm 21)" == "Nmap scan report for" ]; then
-					addr=$(echo $line | rev | awk '{print $1}' | rev | tr -d '()')
-					if [ -n "$all" ]; then
-						all="$all $addr"
-					else
-						all=$addr
-					fi
-				fi
-			done <<< "$nmapout"
-			for addr in $(echo $all | tr ' ' '\n'); do
-				echo "checking: $addr"
-				hostname=$(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes $addr "hostname" | tr '[:upper:]' '[:lower:]')
-				if [ -n "$hostname" ]; then
-					echo "found hostname: $hostname"
-					tld="local"
-					if [ "$subnet" == "$subnetvpn" ]; then
-						tld="vpn"
-					fi
-					echo "adding entry as $hostname.$tld"
-					echo -e "$addr\t$hostname.$tld" >> $tempfile
-				else
-					echo "hostname not found"
-				fi
+			subneturl="$(getsubneturl $subnet)"
+			content="$(curl $subneturl 2> /dev/null)"
+			if [ "$refresh" == false ] && [ -n "$content" ]; then
+				echo "using cache for subnet $subnet"
+				echo "subneturl: $subneturl"
+				printf "\n"
+				echo "$content" >> $tempfile
+			else
+				echo "scanning subnet $subnet ..."
+				all=""
+				nmapout=$(nmap -sP "$subnet")
 				echo
-			done
+				while read line; do
+					echo "$line"
+					if [ "$(echo $line | colrm 21)" == "Nmap scan report for" ]; then
+						addr=$(echo $line | rev | awk '{print $1}' | rev | tr -d '()')
+						if [ -n "$all" ]; then
+							all="$all $addr"
+						else
+							all=$addr
+						fi
+					fi
+				done <<< "$nmapout"
+				for addr in $(echo $all | tr ' ' '\n'); do
+					echo "checking: $addr"
+					hostname=$(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes $addr "hostname" | tr '[:upper:]' '[:lower:]')
+					if [ -n "$hostname" ]; then
+						echo "found hostname: $hostname"
+						tld="local"
+						if [ "$subnet" == "$subnetvpn" ]; then
+							tld="vpn"
+						fi
+						echo "adding entry as $hostname.$tld"
+						echo -e "$addr\t$hostname.$tld" >> $tempfile
+					else
+						echo "hostname not found"
+					fi
+					echo
+				done
+			fi
 		done
 
 		read -p "Press enter to review the changes to $hostsfile ..."
