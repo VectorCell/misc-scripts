@@ -1,0 +1,10 @@
+#!/bin/bash
+
+drives=$(lsblk | grep "^s" | awk '{print $1}')
+
+for drive in $drives; do
+	temp=$(sudo smartctl /dev/$drive --all | grep -E "Temperature|Celsius" | awk '{print $10}')
+	if [ -n "$temp" ]; then
+		echo "${drive}: $temp"
+	fi
+done
