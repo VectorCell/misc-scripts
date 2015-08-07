@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# designed to work with drive from https://github.com/odeke-em/drive
+
+get_list() {
+	# 1>&2 echo "calling getlist($1)"
+	line="$(echo $1 | colrm 1 1)"
+	drive ls "$line"
+}
+
+get_tree() {
+	output=$(get_list "$1")
+	lines=$(echo "$output" | wc -l)
+	if [ $lines -gt 1 ]; then
+		echo "$output" | while read line; do
+			get_tree "$line"
+		done
+	else
+		get_list "$output"
+	fi
+}
+
+get_tree | sort
