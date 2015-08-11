@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ -n "$1" ]; then
+	machine="$1"
+else
+	machine="die-zauberflote"
+fi
+
+if [ -z "$(df | grep utcs)" ]; then
+	mountssh $machine.cs.utexas.edu /v/filer4b/v38q001/bismith /mnt/utcs
+fi
+if [ -z "$(df | grep utcs-$machine)" ]; then
+	mountssh $machine.cs.utexas.edu /var/local /mnt/utcs-$machine
+fi
+
+mosh $machine.cs.utexas.edu
+
+if [ -z "$(lsof /mnt/utcs)" ]; then
+	sudo umount /mnt/utcs
+	sleep 1
+	sudo rmdir /mnt/utcs
+fi
+if [ -z "$(lsof /mnt/utcs-$machine)" ]; then
+	sudo umount /mnt/utcs-$machine
+	sleep 1
+	sudo rmdir /mnt/utcs-$machine
+fi
