@@ -5,9 +5,14 @@ if [ -n "$1" ]; then
 else
 	machine="die-zauberflote"
 fi
+if [ -n "$2" ]; then
+	user="$2"
+else
+	user=$(whoami)
+fi
 
 if [ -z "$(df | grep utcs)" ]; then
-	mountssh $machine.cs.utexas.edu /v/filer4b/v38q001/bismith /mnt/utcs
+	mountssh $machine.cs.utexas.edu /v/filer4b/v38q001/$user /mnt/utcs
 fi
 if [ -z "$(df | grep utcs-$machine)" ]; then
 	mountssh $machine.cs.utexas.edu /var/local /mnt/utcs-$machine
@@ -16,11 +21,13 @@ fi
 mosh $machine.cs.utexas.edu
 
 if [ -z "$(lsof /mnt/utcs)" ]; then
+	echo "unmounting /mnt/utcs ... "
 	sudo umount /mnt/utcs
 	sleep 1
 	sudo rmdir /mnt/utcs
 fi
 if [ -z "$(lsof /mnt/utcs-$machine)" ]; then
+	echo "unmountint /mnt/utcs-$machine ... "
 	sudo umount /mnt/utcs-$machine
 	sleep 1
 	sudo rmdir /mnt/utcs-$machine

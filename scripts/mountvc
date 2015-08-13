@@ -23,8 +23,4 @@ if [ ! -d "$mountdir" ]; then
 fi
 
 echo "mounting $file at $mountdir ... "
-veracrypt --mount --fs-options="users,uid=$(id -u),gid=$(id -g),fmask=0113,dmask=002" "$file" "$mountdir"
-if [ "$?" != "0" ]; then
-	# if the volume isn't fat or ntfs
-	veracrypt "$file" "$mountdir"
-fi
+veracrypt "$file" "$mountdir"
