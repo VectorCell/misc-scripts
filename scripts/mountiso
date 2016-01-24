@@ -8,7 +8,7 @@ if [ ! -f "$file" ]; then
 	if [ ! -d "$mountdir" ]; then
 		sudo mkdir "$mountdir"
 	fi
-	sudo mount -o loop,ro,uid=$(id -u),gid=$(id -g) "$1" "$mountdir"
+	sudo mount -o loop,ro,uid=$(id -u),gid=$(id -g) "$file" "$mountdir"
 else
 	if [ -n "$file" ]; then
 		echo "file not found: $file"
