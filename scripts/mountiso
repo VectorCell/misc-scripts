@@ -4,7 +4,7 @@ mountdir="/mnt/iso"
 
 file="$1"
 
-if [ ! -f "$file" ]; then
+if [ -e "$file" ]; then
 	if [ ! -d "$mountdir" ]; then
 		sudo mkdir "$mountdir"
 	fi

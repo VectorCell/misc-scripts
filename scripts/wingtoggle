@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if pgrep "wingpanel"; then
+	echo "wingpanel running, killing ..."
+	pkill wingpanel
+else
+	echo "starting wingpanel"
+	wingpanel &
+fi
