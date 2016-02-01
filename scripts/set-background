@@ -1,11 +1,21 @@
 #!/bin/bash
 
+cd ~/Pictures/Wallpaper
+
 if [ -n "$1" ]; then
-	file="$1"
+	if [ "$1" == "-r" ]; then
+		file="$(ls | sort -R | head -n 1)"
+	else
+		file="$1"
+	fi
 else
-	cd ~/Pictures/Wallpaper
-	file="$(ls -t ~/Pictures/Wallpaper | head -n 1)"
-	echo "choosing $file"
+	file="$(ls -t | head -n 1)"
 fi
 
-settings set org.gnome.desktop.background picture-uri "file://$(readlink -f file)"
+echo "setting $file as background image"
+
+if [ -n "$(which set-wallpaper)" ]; then
+	set-wallpaper "$file"
+else
+	gsettings set org.gnome.desktop.background picture-uri "file://$(readlink -f file)"
+fi
