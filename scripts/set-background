@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ -n "$1" ]; then
+	file="$1"
+else
+	cd ~/Pictures/Wallpaper
+	file="$(ls -t ~/Pictures/Wallpaper | head -n 1)"
+	echo "choosing $file"
+fi
+
+settings set org.gnome.desktop.background picture-uri "file://$(readlink -f file)"

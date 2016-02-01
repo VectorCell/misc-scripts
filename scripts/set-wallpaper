@@ -1,5 +1,0 @@
-#!/bin/bash
-
-file="$(readlink -f $1)"
-
-settings set org.gnome.desktop.background picture-uri "file://$file"
