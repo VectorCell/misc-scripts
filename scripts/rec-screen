@@ -1,0 +1,9 @@
+#!/bin/bash
+
+resolution=$(xrandr | grep "connected primary" | tr '+' ' ' | awk '{print $4}')
+outfile="screen.mkv"
+if [ -n "$1" ]; then
+	outfile="$1"
+fi
+
+avconv -f x11grab -r 25 -s $resolution -i :0.0+0,0 -vcodec libx264 -pre lossless_ultrafast -threads 0 screen.mkv
