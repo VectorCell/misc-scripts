@@ -1,0 +1,9 @@
+#!/bin/bash
+
+while [ 1 ]; do
+	for interface in $(ls /sys/class/net | grep -v lo); do
+		address=$(ip addr show | grep $interface | grep inet | tr '/' ' ' | awk '{print $2}')
+		echo "$HOSTNAME :: $interface :: $address" | nc vps.bismith.net 8888
+	done
+	sleep 5
+done
