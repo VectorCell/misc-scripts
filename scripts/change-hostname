@@ -1,0 +1,23 @@
+#!/bin/bash
+
+hoststemp="/tmp/hosts-new"
+hostnametemp="/tmp/hostname-new"
+
+if [ -n "$1" ]; then
+	while true; do
+		read -p "Do you wish to change the hostname from $HOSTNAME to ${1}?" yn
+		case $yn in
+			[Yy]* ) break;;
+			[Nn]* ) echo "not changing hostname."; exit;;
+			* ) echo "Please answer y or n.";;
+		esac
+	done
+	echo "Changing hostname from $HOSTNAME to $1"
+	sed "s/$HOSTNAME/$1/g" /etc/hosts > $hoststemp
+	sed "s/$HOSTNAME/$1/g" /etc/hostname > $hostnametemp
+	sudo tee /etc/hosts < $hoststemp > /dev/null
+	sudo tee /etc/hostname < $hostnametemp > /dev/null
+	rm $hoststemp $hostnametemp
+else
+	echo "Must supply replacement hostname."
+fi
