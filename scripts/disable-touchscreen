@@ -1,0 +1,6 @@
+#!/bin/bash
+
+idnum=$(xinput | grep Touchscreen | awk '{print $5}' | tr '=' ' ' | awk '{print $2}')
+
+#echo "touchscreen id num: $idnum"
+xinput disable $idnum
