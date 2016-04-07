@@ -15,11 +15,11 @@ fi
 # this might be different on every system, the lazy, bad way to do it is this
 # eventually all machines should mount in /media/[user]
 where="/media"
-if [ "$HOSTNAME" == "Precisix" ] || [ "$HOSTNAME" == "Precision390" ]; then
+if [ "$HOSTNAME" == "Precisix" ] || [ "$HOSTNAME" == "leander" ] || [ "$HOSTNAME" == "Green" ]; then
 	where="/media/$(whoami)"
 fi
 
-for label in $(ls /dev/disk/by-label | grep -v System); do
+for label in $(ls /dev/disk/by-label | grep -vE "System|UDF"); do
 	if [ "$label" != "boot" ]; then
 		disk=$(readlink -f /dev/disk/by-label/$label)
 		if [ -z "$(df | grep $disk)" ]; then
