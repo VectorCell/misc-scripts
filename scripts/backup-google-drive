@@ -1,0 +1,87 @@
+#!/bin/bash
+
+# dir to back up
+if [ -z "$1" ]; then
+	echo "USAGE: backup-google-drive [DIR] [GOOGLE-DRIVE-DIR] [PASSFILE]"
+
+	DIR=$(pwd)
+	dir=$(dirname $(readlink -f $DIR/$(basename "$0")))
+else
+	dir="$1"
+	DIR=$( cd "$dir" && pwd )
+	dir=$(dirname $(readlink -f $DIR/$(basename "$0")))
+fi
+
+# google drive location
+if [ -z "$2" ]; then
+	if [ -d "/home/$(whoami)/Google-Drive" ]; then
+		gdrive="/home/$(whoami)/Google-Drive"
+		echo "using $gdrive as Google Drive location"
+	else
+		echo "ERROR: Google Drive location not specified"
+		exit 1
+	fi
+else
+	echo "Using Google Drive location: $2"
+	gdrive="$2"
+fi
+if [ ! -d "$gdrive/backup" ]; then
+	mkdir "$gdrive/backup"
+fi
+backupdir="$gdrive/backup"
+
+# passfile
+if [ -z "$3" ]; then
+	if [ -e "$dir/passfile" ]; then
+		passfile="$dir/passfile"
+	else
+		echo "ERROR: passfile not specified, and $dir/passfile not found"
+		exit 1
+	fi
+else
+	passfile="$3"
+fi
+
+dirbase=$(echo "$dir" | rev | tr '/' ' ' | awk '{print $1}' | rev)
+filename=${dirbase}_$(date "+%Y-%m-%d_%H-%M-%S").tar.gz.aes
+
+cd $dir/..
+echo "pwd: $(pwd)"
+echo "backing up: $dir"
+echo "to file: $backupdir/$filename"
+echo "encrypted using passfile: $passfile"
+
+echo
+echo -n "determining directory size ... "
+size=$(du -hd 0 $dir | awk '{print $1}')
+echo "$size"
+
+echo
+echo "creating backup tar at $backupdir/$filename ..."
+tar -c $dirbase | pv -s $size | gzip | aes-encrypt $passfile > $backupdir/$filename
+
+echo
+echo "pushing file to Google Drive ..."
+cd $backupdir
+yes | drive push $filename
+
+echo
+echo "deleting Google-Drive/backup/$filename"
+rm $filename
+
+echo
+echo "deleting old backups from Google Drive ..."
+entrynum=0
+drive ls | tr '/' ' ' | rev | awk '{print $1}' | rev | grep -E "${dirbase}_" | sort | tac | while read entry; do
+	((entrynum=entrynum+1))
+	if [ $entrynum -gt 2 ]; then
+		echo "removing $entry from Google Drive ..."
+		yes | drive delete $entry
+	else
+		echo "not removing $entry" > /dev/null
+	fi
+done
+
+cd -
+echo "done"
+
