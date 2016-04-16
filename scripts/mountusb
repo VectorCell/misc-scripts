@@ -33,7 +33,7 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 
 		echo "mounting $DISK at $WHERE/$LABEL using $TYPE"
 
-		if [ ! -d "$WHERE/$LABEL" ]; then
+		if [ $ISTEST == "false" ] && [ ! -d "$WHERE/$LABEL" ]; then
 			sudo mkdir "$WHERE/$LABEL"
 		fi
 
