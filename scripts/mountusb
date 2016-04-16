@@ -32,7 +32,7 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 		fi
 
 		# skips if disk is part of a ZFS vdev
-		if [ $TYPE == "zfs-member" ]; then
+		if [ $TYPE == "zfs_member" ]; then
 			continue
 		fi
 
