@@ -1,0 +1,103 @@
+#!/bin/bash
+
+user=$(whoami)
+
+istest="false"
+for arg in "$@"; do
+	if [ "$arg" == "--test" ] || [ "$arg" == "-t" ]; then
+		istest="true"
+	fi
+done
+if [ "$istest" == "true" ]; then
+	echo "performing a dry run (no changes will occur)"
+fi
+
+# this might be different on every system, the lazy, bad way to do it is this
+# eventually all machines should mount in /media/[user]
+where="/media"
+if [ "$HOSTNAME" == "Precisix" ] || [ "$HOSTNAME" == "leander" ] || [ "$HOSTNAME" == "Green" ]; then
+	where="/media/$(whoami)"
+fi
+
+for label in $(ls /dev/disk/by-label | grep -vE "System|UDF"); do
+	if [ "$label" != "boot" ]; then
+		disk=$(readlink -f /dev/disk/by-label/$label)
+		if [ -z "$(df | grep $disk)" ]; then
+			fsline=$(sudo fdisk $(echo $disk | colrm 9) -l 2> /dev/null | grep $disk)
+			echo "mounting $label ($disk) at $where/$label ..."
+
+			if [ ! -d $where/$label ]; then
+				if [ "$istest" == "false" ]; then
+					sudo mkdir $where/$label
+				else
+					echo sudo mkdir $where/$label
+				fi
+			fi
+
+			if [ -z "$(echo $fsline | grep GPT)" ]; then
+				# disk uses MBR
+				type="other"
+				if [ -n "$(echo $fsline | grep FAT16)" ] || [ -n "$(echo $fsline | grep FAT32)" ]; then
+					type="vfat"
+				fi
+				if [ -n "$(echo $fsline | grep NTFS)" ]; then
+					type="ntfs"
+				fi
+
+				if [ "$type" != "other" ]; then
+					if [ "$istest" == "false" ]; then
+						sudo mount -t $type $disk $where/$label -o uid=$(id -u $user),gid=$(id -g $user),utf8,dmask=022,fmask=133
+					else
+						echo sudo mount -t $type $disk $where/$label -o uid=$(id -u $user),gid=$(id -g $user),utf8,dmask=022,fmask=133
+					fi
+				else
+					if [ "$istest" == "false" ]; then
+						sudo mount $disk $where/$label
+					else
+						echo sudo mount $disk $where/$label
+					fi
+				fi
+			else
+				# disk uses GPT
+				fsline=$(sudo parted -l -m | tr -d '\n' | sed 's/BYT;/\n/g' | grep $(echo $disk | colrm 9))
+				type=$(echo $fsline | tr ':' '\n' | head -n 11 | tail -n 1)
+				if [ "$type" == "ntfs" ]; then
+					if [ "$istest" == "false" ]; then
+						sudo mount -t $type $disk $where/$label -o uid=$(id -u $user),gid=$(id -g $user),utf8,dmask=022,fmask=133
+					else
+						echo sudo mount -t $type $disk $where/$label -o uid=$(id -u $user),gid=$(id -g $user),utf8,dmask=022,fmask=133
+					fi
+				elif [ "$type" == "fat32" ] || [ "$type" == "fat32" ]; then
+					if [ "$istest" == "false" ]; then
+						sudo mount -t vfat $disk $where/$label -o uid=$(id -u $user),gid=$(id -g $user),utf8,dmask=022,fmask=133
+					else
+						echo sudo mount -t vfat $disk $where/$label -o uid=$(id -u $user),gid=$(id -g $user),utf8,dmask=022,fmask=133
+					fi
+				else
+					if [ "$istest" == "false" ]; then
+						sudo mount $disk $where/$label
+					else
+						echo sudo mount $disk $where/$label
+					fi
+				fi
+			fi
+#		else
+#			echo "skipping $label ($disk), already mounted"
+		fi
+	fi
+done
+
+# cleans up unused directories
+for label in $(ls $where); do
+	#if [ $(stat -c "%u" $where/$label) == $(id -u root) ]; then
+	if [ -z "$(df | grep $where/$label 2> /dev/null)" ]; then
+		echo "removing unused directory $where/$label"
+		if [ "$istest" == "false" ]; then
+			sudo rmdir $where/$label
+		else
+			echo sudo rmdir $where/$label
+		fi
+	fi
+done
+
+tmux refresh-client -S &> /dev/null
