@@ -1,0 +1,10 @@
+#!/bin/bash
+
+INTERFACE=$1
+
+if [ -z "$INTERFACE" ]; then
+	INTERFACE=eth0
+fi
+echo "Using interface $INTERFACE ..."
+
+speedometer -r $INTERFACE -t $INTERFACE
