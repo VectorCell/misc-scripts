@@ -1,0 +1,3 @@
+#!/bin/bash
+
+nvidia-settings -q gpucoretemp 2> /dev/null | grep Attribute | awk '{print $4}' | tr -d '.'
