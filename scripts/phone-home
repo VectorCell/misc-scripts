@@ -7,6 +7,12 @@ if [ "$1" == "stop" ] || [ "$1" == "off" ]; then
 
 	echo "killing phone-home"
 	sudo pkill -kill phone-home
+elif [ "$1" == "-l" ] || [ "$1" == "--listen" ]; then
+	echo "listening ..."
+	nc -l 8888
+	while [ $? -ne 0 ]; do
+		!!
+	done
 else
 	while [ 1 ]; do
 		for interface in $(ls /sys/class/net | grep -v lo); do
