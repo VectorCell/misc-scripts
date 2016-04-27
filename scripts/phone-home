@@ -9,9 +9,8 @@ if [ "$1" == "stop" ] || [ "$1" == "off" ]; then
 	sudo pkill -kill phone-home
 elif [ "$1" == "-l" ] || [ "$1" == "--listen" ]; then
 	echo "listening ..."
-	nc -l 8888
 	while [ $? == 0 ]; do
-		!!
+		nc -l 8888
 	done
 else
 	while [ 1 ]; do
