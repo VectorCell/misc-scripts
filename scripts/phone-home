@@ -10,7 +10,7 @@ if [ "$1" == "stop" ] || [ "$1" == "off" ]; then
 elif [ "$1" == "-l" ] || [ "$1" == "--listen" ]; then
 	echo "listening ..."
 	nc -l 8888
-	while [ $? -ne 0 ]; do
+	while [ $? == 0 ]; do
 		!!
 	done
 else
