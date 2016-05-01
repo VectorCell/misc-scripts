@@ -7,5 +7,5 @@ fi
 
 find "$DIR" -type f | sort | while read file; do
 	1>&2 echo "$file"
-	xxhsum "$file" | awk '{print $1}'
+	md5sum "$file"
 done
