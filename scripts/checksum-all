@@ -1,0 +1,11 @@
+#!/bin/bash
+
+DIR="$1"
+if [ -z "$DIR" ]; then
+	DIR=.
+fi
+
+find "$DIR" -type f | sort | while read file; do
+	1>&2 echo "$file"
+	xxhsum "$file" | awk '{print $1}'
+done
