@@ -8,6 +8,7 @@ for arg in "$@"; do
 done
 if [ "$ISTEST" == "true" ]; then
 	echo "performing a dry run (no changes will occur)"
+	echo
 fi
 
 # where to mount all disks
@@ -27,7 +28,10 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 
 		# skips if already mounted
 		if [ -n "$(df | grep $DISK 2> /dev/null)" ]; then
-			#echo "skipping $DISK, already mounted at $(df | grep $DISK | awk '{print $6}')"
+			if [ $ISTEST == "true" ]; then
+				echo "skipping $DISK, already mounted at $(df | grep $DISK | awk '{print $6}')"
+				echo
+			fi
 			continue
 		fi
 
@@ -45,12 +49,14 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 		if [ $TYPE == vfat ] || [ $TYPE == ntfs ] || [ $TYPE == exfat ]; then
 			if [ $ISTEST == "true" ]; then
 				echo sudo mount -t $TYPE $DISK $WHERE/$LABEL -o uid=$(id -u),gid=$(id -g),utf8,dmask=022,fmask=133
+				echo
 			else
 				sudo mount -t $TYPE $DISK $WHERE/$LABEL -o uid=$(id -u),gid=$(id -g),utf8,dmask=022,fmask=133 2> /dev/null
 			fi
 		else
 			if [ $ISTEST == "true" ]; then
 				echo sudo mount -t $TYPE $DISK $WHERE/$LABEL
+				echo
 			else
 				sudo mount -t $TYPE $DISK $WHERE/$LABEL 2> /dev/null
 			fi
@@ -59,15 +65,13 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 done
 
 # cleans up unused directories in $WHERE
-for LABEL in $(ls $WHERE); do
-	if [ -z "$(df | grep $WHERE/$LABEL 2> /dev/null)" ]; then
-		echo "removing unused directory $WHERE/$LABEL"
-		if [ "$ISTEST" == "false" ]; then
+if [ "$ISTEST" == "false" ]; then
+	for LABEL in $(ls $WHERE); do
+		if [ -z "$(df | grep $WHERE/$LABEL 2> /dev/null)" ]; then
+			echo "removing unused directory $WHERE/$LABEL"
 			sudo rmdir $WHERE/$LABEL
-		else
-			echo sudo rmdir $WHERE/$LABEL
 		fi
-	fi
-done
+	done
+fi
 
 tmux refresh-client -S &> /dev/null
