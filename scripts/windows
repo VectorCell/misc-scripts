@@ -1,0 +1,9 @@
+#!/bin/bash
+
+MENUENTRY="$(cat /boot/grub/grub.cfg | grep ^menuentry | grep Windows | tr "\'" '\n' | grep -v menuentry | head -n 1)"
+
+echo "$MENUENTRY"
+
+sudo grub-reboot "$MENUENTRY"
+
+sudo reboot
