@@ -21,10 +21,21 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 
 	DISK=$(echo "$line" | tr ' =' '\n ' | grep "/dev/" | tr -d ':')
 	LABEL=$(echo "$line" | tr ' =' '\n ' | grep LABEL | tr -d '"' | awk '{print $2}')
-	TYPE=$(echo "$line" | tr ' =' '\n ' | grep TYPE | tr -d '"' | awk '{print $2}')
+	TYPE=$(echo "$line" | tr ' =' '\n ' | grep TYPE | grep -v SEC_TYPE | tr -d '"' | awk '{print $2}')
 
 	# mount each disk
 	if [ -n "$LABEL" ]; then
+
+		# skips if disk is part of a ZFS vdev
+		if [ $TYPE == "zfs_member" ]; then
+			continue
+		fi
+
+		if [ $ISTEST == "true" ]; then
+			echo "DISK: $DISK"
+			echo "LABEL: $LABEL"
+			echo "TYPE: $TYPE"
+		fi
 
 		# skips if already mounted
 		if [ -n "$(df | grep $DISK 2> /dev/null)" ]; then
@@ -32,11 +43,6 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 				echo "skipping $DISK, already mounted at $(df | grep $DISK | awk '{print $6}')"
 				echo
 			fi
-			continue
-		fi
-
-		# skips if disk is part of a ZFS vdev
-		if [ $TYPE == "zfs_member" ]; then
 			continue
 		fi
 
