@@ -13,16 +13,19 @@ if [ -z "$1" ]; then
 	exit 1
 fi
 FLASHFILE="$1"
+FLASHFILE="$(echo $FLASHFILE | sed 's/ /%20/g')"
+FLASHFILE="$(readlink -f $FLASHFILE)"
+echo "opening $FLASHFILE"
 
 echo -e "<html>" >> $TEMPFILE
 echo -e "	<body>" >> $TEMPFILE
 echo -e "		<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\"" >> $TEMPFILE
 echo -e "			codebase=\"http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0\"" >> $TEMPFILE
 echo -e "			width=\"100%\" height=\"100%\">" >> $TEMPFILE
-echo -e "		<param name=\"movie\" value=\"file:///mnt/encrypted/porn/games/$FLASHFILE\" />" >> $TEMPFILE
+echo -e "		<param name=\"movie\" value=\"file://$FLASHFILE\" />" >> $TEMPFILE
 echo -e "		<param name=\"quality\" value=\"high\" />" >> $TEMPFILE
 echo -e "		<PARAM NAME=\"SCALE\" VALUE=\"default\">" >> $TEMPFILE
-echo -e "		<embed src=\"file:///mnt/encrypted/porn/games/$FLASHFILE\"" >> $TEMPFILE
+echo -e "		<embed src=\"file://$FLASHFILE\"" >> $TEMPFILE
 echo -e "			quality=\"high\"" >> $TEMPFILE
 echo -e "			type=\"application/x-shockwave-flash\"" >> $TEMPFILE
 echo -e "			width=\"100%\" height=\"100%\" SCALE=\"default\"" >> $TEMPFILE
@@ -31,6 +34,7 @@ echo -e "		</object>" >> $TEMPFILE
 echo -e "	</body>" >> $TEMPFILE
 echo -e "</html>" >> $TEMPFILE
 
+cat $TEMPFILE
 fileopen $TEMPFILE
 
 (sleep 5 && rm $TEMPFILE) &
