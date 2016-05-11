@@ -7,5 +7,6 @@ fi
 
 find "$DIR" -type f | sort | while read file; do
 	1>&2 echo "$file"
-	md5sum "$file"
+	pv < "$file" | md5sum | tr -d '\-\n'
+	echo "${file}"
 done
