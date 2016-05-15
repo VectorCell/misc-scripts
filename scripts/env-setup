@@ -1,0 +1,67 @@
+#!/bin/bash
+
+
+sudo apt-get update
+if [ "$?" -ne "0" ]; then exit 1; fi
+sudo apt-get install build-essential libssl-dev
+if [ "$?" -ne "0" ]; then exit 1; fi
+
+
+cd ~/Programs
+
+git clone https://github.com/VectorCell/dotfiles.git
+cd dotfiles
+yes | ./install.sh
+cd ..
+
+git clone https://github.com/VectorCell/pubkeys.git
+cd pubkeys
+./add-keys.sh
+cd ..
+
+git clone https://github.com/VectorCell/tmux-configuration.git
+cd tmux-configuration
+yes | install.sh
+cd ..
+
+git clone https://github.com/VectorCell/sublime-configuration.git
+cd sublime-configuration
+./install.sh
+cd ..
+
+git clone https://github.com/VectorCell/output-sparse.git
+cd output-sparse
+make
+make install
+cd ..
+
+git clone https://github.com/VectorCell/music-control.git
+cd music-control
+./install.sh
+cd ..
+
+git clone https://github.com/VectorCell/openssl-encrypt.git
+cd openssl-encrypt
+./install.sh
+cd ..
+
+git clone https://github.com/VectorCell/sumpass.git
+cd sumpass
+make
+make install
+cd ..
+
+git clone https://github.com/Cyan4973/xxHash.git
+cd xxHash
+make
+cd ~/bin
+ln -s ~/Programs/xxHash/xxhsum
+cd ~/Programs
+
+
+which output-sparse
+which sp
+which aes-encrypt
+which aes-decrypt
+which sump
+which xxhsum

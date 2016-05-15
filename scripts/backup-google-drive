@@ -53,12 +53,12 @@ echo "encrypted using passfile: $passfile"
 
 echo
 echo -n "determining directory size ... "
-size=$(du -d 0 $dir | awk '{print $1}')
-echo "$size"
+size=$(du -bd 0 $dir | awk '{print $1}')
+echo "$size bytes"
 
 echo
 echo "creating backup tar at $backupdir/$filename ..."
-tar -c $dirbase | pv -s ${size}k | gzip | aes-encrypt $passfile > $backupdir/$filename
+tar -c $dirbase | pv -s ${size} | gzip | aes-encrypt $passfile > $backupdir/$filename
 
 echo
 echo "pushing file to Google Drive ..."
