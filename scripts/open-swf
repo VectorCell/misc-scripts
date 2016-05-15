@@ -34,7 +34,7 @@ echo -e "		</object>" >> $TEMPFILE
 echo -e "	</body>" >> $TEMPFILE
 echo -e "</html>" >> $TEMPFILE
 
-cat $TEMPFILE
+#cat $TEMPFILE
 fileopen $TEMPFILE
 
 (sleep 5 && rm $TEMPFILE) &
