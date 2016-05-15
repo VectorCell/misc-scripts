@@ -11,48 +11,57 @@ cd ~/Programs
 
 git clone https://github.com/VectorCell/dotfiles.git
 cd dotfiles
+git pull
 yes | ./install.sh
 cd ..
 
 git clone https://github.com/VectorCell/pubkeys.git
 cd pubkeys
+git pull
 ./add-keys.sh
 cd ..
 
 git clone https://github.com/VectorCell/tmux-configuration.git
 cd tmux-configuration
+git pull
 yes | ./install.sh
 cd ..
 
 git clone https://github.com/VectorCell/sublime-config.git
 cd sublime-config
+git pull
 ./install.sh
 cd ..
 
 git clone https://github.com/VectorCell/output-sparse.git
 cd output-sparse
+git pull
 make
 make install
 cd ..
 
 git clone https://github.com/VectorCell/music-control.git
 cd music-control
+git pull
 ./install.sh
 cd ..
 
 git clone https://github.com/VectorCell/openssl-encrypt.git
 cd openssl-encrypt
+git pull
 ./install.sh
 cd ..
 
 git clone https://github.com/VectorCell/sumpass.git
 cd sumpass
+git pull
 make
 make install
 cd ..
 
 git clone https://github.com/Cyan4973/xxHash.git
 cd xxHash
+git pull
 make
 cd ~/bin
 ln -s ~/Programs/xxHash/xxhsum
