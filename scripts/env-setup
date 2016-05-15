@@ -24,8 +24,8 @@ cd tmux-configuration
 yes | ./install.sh
 cd ..
 
-git clone https://github.com/VectorCell/sublime-configuration.git
-cd sublime-configuration
+git clone https://github.com/VectorCell/sublime-config.git
+cd sublime-config
 ./install.sh
 cd ..
 
