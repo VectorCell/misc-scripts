@@ -138,17 +138,18 @@ else
 #			fi
 #		done
 
-		read -p "Press enter to review the changes to $hostsfile ..."
-		less $tempfile
-		echo "You are about to replace $hostsfile"
-		while true; do
-		read -p "Do you wish to commit the changes? [y/n]:" yn
-			case $yn in
-				[Yy]* ) break;;
-				[Nn]* ) echo "not changing $hostsfile, exiting ..."; rm $tempfile; exit;;
-				* ) echo "Please answer yes or no.";;
-			esac
-		done
+
+#		read -p "Press enter to review the changes to $hostsfile ..."
+#		less $tempfile
+#		echo "You are about to replace $hostsfile"
+#		while true; do
+#		read -p "Do you wish to commit the changes? [y/n]:" yn
+#			case $yn in
+#				[Yy]* ) break;;
+#				[Nn]* ) echo "not changing $hostsfile, exiting ..."; rm $tempfile; exit;;
+#				* ) echo "Please answer yes or no.";;
+#			esac
+#		done
 
 		sudo rm $hostsfile
 		sudo cp $tempfile $hostsfile
