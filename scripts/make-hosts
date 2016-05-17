@@ -79,8 +79,20 @@ else
 		printf "\n\n" >> $tempfile
 
 		curl http://vpn.bismith.net/subnets/vpn.txt 2> /dev/null >> $tempfile
+		if [ "$?" -ne "0" ]; then
+			echo "ERROR: unable to fetch subnet information"
+			exit 1
+		fi
 		curl http://vpn.bismith.net/subnets/apt.txt 2> /dev/null >> $tempfile
+		if [ "$?" -ne "0" ]; then
+			echo "ERROR: unable to fetch subnet information"
+			exit 1
+		fi
 		curl http://vpn.bismith.net/subnets/home.txt 2> /dev/null >> $tempfile
+		if [ "$?" -ne "0" ]; then
+			echo "ERROR: unable to fetch subnet information"
+			exit 1
+		fi
 
 #		for subnet in $(echo $subnetlan; echo $subnetvpn); do
 #			subneturl="$(getsubneturl $subnet)"
