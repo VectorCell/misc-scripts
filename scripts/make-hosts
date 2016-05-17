@@ -44,9 +44,15 @@ while [[ $# > 0 ]]; do
 	shift # past argument or value
 done
 
-if [ -z "$(which nmap)" ]; then
-	echo "ERROR: you need nmap installed"
-	echo "make sure that nmap is installed and in your path"
+#if [ -z "$(which nmap)" ]; then
+#	echo "ERROR: you need nmap installed"
+#	echo "make sure that nmap is installed and in your path"
+#	exit 1
+#fi
+
+if [ -z "$(which curl)" ]; then
+	echo "ERROR: you need curl installed"
+	echo "make sure that curl is installed and in your path"
 	exit 1
 fi
 
@@ -72,48 +78,53 @@ else
 		cat $hostsfile >> $tempfile
 		printf "\n\n" >> $tempfile
 
-		for subnet in $(echo $subnetlan; echo $subnetvpn); do
-			subneturl="$(getsubneturl $subnet)"
-			content="$(curl $subneturl 2> /dev/null)"
-			if [ "$refresh" == false ] && [ -n "$content" ]; then
-				echo "using cache for subnet $subnet"
-				echo "subneturl: $subneturl"
-				printf "\n"
-				echo "$content" >> $tempfile
-			else
-				echo "scanning subnet $subnet ..."
-				all=""
-				nmapout=$(nmap -sP "$subnet")
-				echo
-				while read line; do
-					echo "$line"
-					if [ "$(echo $line | colrm 21)" == "Nmap scan report for" ]; then
-						addr=$(echo $line | rev | awk '{print $1}' | rev | tr -d '()')
-						if [ -n "$all" ]; then
-							all="$all $addr"
-						else
-							all=$addr
-						fi
-					fi
-				done <<< "$nmapout"
-				for addr in $(echo $all | tr ' ' '\n'); do
-					echo "checking: $addr"
-					hostname=$(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes $addr "hostname" | tr '[:upper:]' '[:lower:]')
-					if [ -n "$hostname" ]; then
-						echo "found hostname: $hostname"
-						tld="local"
-						if [ "$subnet" == "$subnetvpn" ]; then
-							tld="vpn"
-						fi
-						echo "adding entry as $hostname.$tld"
-						echo -e "$addr\t$hostname.$tld" >> $tempfile
-					else
-						echo "hostname not found"
-					fi
-					echo
-				done
-			fi
-		done
+		curl http://vpn.bismith.net/subnets/vpn.txt 2> /dev/null >> $tempfile
+		curl http://vpn.bismith.net/subnets/apt.txt 2> /dev/null >> $tempfile
+		curl http://vpn.bismith.net/subnets/home.txt 2> /dev/null >> $tempfile
+
+#		for subnet in $(echo $subnetlan; echo $subnetvpn); do
+#			subneturl="$(getsubneturl $subnet)"
+#			content="$(curl $subneturl 2> /dev/null)"
+#			if [ "$refresh" == false ] && [ -n "$content" ]; then
+#				echo "using cache for subnet $subnet"
+#				echo "subneturl: $subneturl"
+#				printf "\n"
+#				echo "$content" >> $tempfile
+#			else
+#
+#				echo "scanning subnet $subnet ..."
+#				all=""
+#				nmapout=$(nmap -sP "$subnet")
+#				echo
+#				while read line; do
+#					echo "$line"
+#					if [ "$(echo $line | colrm 21)" == "Nmap scan report for" ]; then
+#						addr=$(echo $line | rev | awk '{print $1}' | rev | tr -d '()')
+#						if [ -n "$all" ]; then
+#							all="$all $addr"
+#						else
+#							all=$addr
+#						fi
+#					fi
+#				done <<< "$nmapout"
+#				for addr in $(echo $all | tr ' ' '\n'); do
+#					echo "checking: $addr"
+#					hostname=$(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=yes $addr "hostname" | tr '[:upper:]' '[:lower:]')
+#					if [ -n "$hostname" ]; then
+#						echo "found hostname: $hostname"
+#						tld="local"
+#						if [ "$subnet" == "$subnetvpn" ]; then
+#							tld="vpn"
+#						fi
+#						echo "adding entry as $hostname.$tld"
+#						echo -e "$addr\t$hostname.$tld" >> $tempfile
+#					else
+#						echo "hostname not found"
+#					fi
+#					echo
+#				done
+#			fi
+#		done
 
 		read -p "Press enter to review the changes to $hostsfile ..."
 		less $tempfile

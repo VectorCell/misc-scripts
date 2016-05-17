@@ -67,10 +67,12 @@ cd ~/bin
 ln -s ~/Programs/xxHash/xxhsum
 cd ~/Programs
 
+make-hosts --restore
+make-hosts
 
-which output-sparse
-which sp
-which aes-encrypt
-which aes-decrypt
-which sump
-which xxhsum
+which output-sparse || echo "unable to find output-sparse"
+which sp || echo "unable to find sp"
+which aes-encrypt || echo "unable to find aes-encrypt"
+which aes-decrypt || echo "unable to find aes-decrypt"
+which sump || echo "unable to find sump"
+which xxhsum || echo "unable to find xxhsum"
