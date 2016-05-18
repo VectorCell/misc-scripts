@@ -1,0 +1,23 @@
+#!/bin/bash
+
+SRC="$1"
+DEST="$2"
+
+if [ -z "$SRC" ] || [ -z "$DEST" ]; then
+	1>&2 echo "ERROR: source:$SRC destination:$DEST"
+	exit 1
+fi
+
+if [ ! -e "$SRC" ]; then
+	1>&2 echo "ERROR: $SRC not found"
+	exit 1
+fi
+
+if [ ! -d "$DEST" ]; then
+	1>&2 echo "ERROR: $DEST is not a directory"
+	exit 1
+fi
+
+SIZE=$(du -bd 0 "$SRC" | awk '{print $1}')
+
+tar -c "$SRC" | pv -s $SIZE | (cd "$DEST" && tar -x)
