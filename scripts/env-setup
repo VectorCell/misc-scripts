@@ -11,6 +11,12 @@ fi
 
 cd ~/Programs
 
+git clone https://github.com/VectorCell/misc-scripts.git
+cd misc-scripts
+git pull
+yes | ./install.sh
+cd ..
+
 git clone https://github.com/VectorCell/dotfiles.git
 cd dotfiles
 git pull
