@@ -1,3 +1,9 @@
 #!/bin/bash
 
-env-setup
+#
+#  DO NOT CHANGE THIS SCRIPT
+#
+
+cp "$(which env-setup)" /tmp/
+bash /tmp/env-setup
+rm /tmp/env-setup
