@@ -32,9 +32,9 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 		fi
 
 		if [ $ISTEST == "true" ]; then
-			echo "DISK: $DISK"
+			echo "DISK:  $DISK"
 			echo "LABEL: $LABEL"
-			echo "TYPE: $TYPE"
+			echo "TYPE:  $TYPE"
 		fi
 
 		# skips if already mounted
