@@ -1,0 +1,14 @@
+#!/bin/bash
+
+tempscript="/tmp/playall-$RANDOM"
+
+printf "#!/bin/bash\n\n" >> $tempscript
+
+find $1 -type f | while read line; do
+	echo "clear" >> $tempscript
+	echo -e "echo \"$line\"" >> $tempscript
+	echo -e "omxplayer -b -o hdmi \"$line\"" >> $tempscript
+	echo -e "echo\n" >> $tempscript
+done
+
+rm $tempscript
