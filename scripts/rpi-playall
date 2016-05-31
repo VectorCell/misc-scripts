@@ -11,4 +11,6 @@ find "$1" -type f | while read line; do
 	echo -e "echo\n" >> $tempscript
 done
 
+bash $tempscript
+
 rm $tempscript
