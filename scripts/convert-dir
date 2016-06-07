@@ -1,0 +1,28 @@
+#!/bin/bash
+
+sourcedir="$1"
+if [ -z "$sourcedir" ]; then
+	echo "ERROR: must specify directory"
+	exit 1
+fi
+
+echo "creating directory structure for converted files ..."
+mkdir "conv"
+find "$sourcedir" -type d | while read dir; do
+	mkdir "conv/$dir"
+done
+
+tempscript="/tmp/convert-$RANDOM"
+
+echo "converting files from $sourcedir ..."
+find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$" | while read file; do
+	destfile="conv/$(echo $file | rev | colrm 1 4 | rev).mkv"
+	echo "$file -> $destfile"
+	if [ ! -e "$destfile" ]; then
+		echo -e "ffmpeg -i \"$file\" -c:v libx264 -c:a copy \"$destfile\"" >> $tempscript
+	fi
+done
+
+bash $tempscript
+
+rm $tempscript
