@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [ -n "$(which ffmpeg)" ]; then
+	convprog="ffmpeg"
+elif [ -n "$(which avconv)" ]; then
+	convprog="avconv"
+else
+	echo "ERROR: unable to find ffmpeg or avconv"
+	exit 1
+fi
+
 sourcedir="$1"
 if [ -z "$sourcedir" ]; then
 	echo "ERROR: must specify directory"
@@ -15,14 +24,16 @@ done
 tempscript="/tmp/convert-$RANDOM"
 
 echo "converting files from $sourcedir ..."
+echo "#!/bin/bash" >> $tempscript
 find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$" | while read file; do
 	destfile="conv/$(echo $file | rev | colrm 1 4 | rev).mkv"
 	echo "$file -> $destfile"
 	if [ ! -e "$destfile" ]; then
-		echo -e "ffmpeg -i \"$file\" -c:v libx264 -c:a copy \"$destfile\"" >> $tempscript
+		echo -e "$convprog -i \"$file\" -c:v libx264 -c:a copy \"$destfile\"" >> $tempscript
 	fi
 done
 
+cat $tempscript
 bash $tempscript
 
 rm $tempscript
