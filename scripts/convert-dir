@@ -43,6 +43,6 @@ find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$" | while rea
 done
 
 cat $tempscript
-#bash $tempscript
+bash $tempscript
 
 rm $tempscript
