@@ -15,10 +15,19 @@ if [ -z "$sourcedir" ]; then
 	exit 1
 fi
 
+destdir="$2"
+if [ -n "$destdir" ] && [ ! -e "$destdir" ]; then
+	echo "ERROR: directory $destdir does not exist"
+	exit 1
+fi
+if [ -n "$destdir" ]; then
+	destdir="$destdir/"
+fi
+
 echo "creating directory structure for converted files ..."
-mkdir "conv"
+mkdir "${destdir}conv"
 find "$sourcedir" -type d | while read dir; do
-	mkdir "conv/$dir"
+	mkdir "${destdir}conv/$dir"
 done
 
 tempscript="/tmp/convert-$RANDOM"
@@ -26,7 +35,7 @@ tempscript="/tmp/convert-$RANDOM"
 echo "converting files from $sourcedir ..."
 echo "#!/bin/bash" >> $tempscript
 find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$" | while read file; do
-	destfile="conv/$(echo $file | rev | colrm 1 4 | rev).mkv"
+	destfile="${destdir}conv/$(echo $file | rev | colrm 1 4 | rev).mkv"
 	echo "$file -> $destfile"
 	if [ ! -e "$destfile" ]; then
 		echo -e "$convprog -i \"$file\" -c:v libx264 -c:a copy \"$destfile\"" >> $tempscript
@@ -34,6 +43,6 @@ find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$" | while rea
 done
 
 cat $tempscript
-bash $tempscript
+#bash $tempscript
 
 rm $tempscript
