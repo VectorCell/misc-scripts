@@ -28,11 +28,17 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 
 		# skips if disk is part of a ZFS vdev
 		if [ $TYPE == "zfs_member" ]; then
+			if [ "$ISTEST" == "true" ]; then
+				echo "skipping $DISK ($TYPE)"
+			fi
 			continue
 		fi
 
 		# skips if part of an mdadm raid array
 		if [ $TYPE == "linux_raid_member" ]; then
+			if [ "$ISTEST" == "true" ]; then
+				echo "skipping $DISK ($TYPE)"
+			fi
 			continue
 		fi
 
