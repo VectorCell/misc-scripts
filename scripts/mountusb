@@ -56,6 +56,13 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 			fi
 			continue
 		fi
+		if [ -n "$(lsblk | grep $(echo $DISK | tr '/' ' ' | rev | awk '{print $1}' | rev) | awk '{print $7}')" ]; then
+			if [ $ISTEST == "true" ]; then
+				echo "skipping $DISK, already mounted at $(lsblk | grep $(echo $DISK | tr '/' ' ' | rev | awk '{print $1}' | rev) | awk '{print $7}')"
+				echo
+			fi
+			continue
+		fi
 
 		echo "mounting $DISK at $WHERE/$LABEL using $TYPE"
 
