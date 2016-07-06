@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ -z "$(df | grep gotdata)" ]; then
+	mountssh gotdata.me /home/bismith /mnt/gotdata
+fi
+
+mosh gotdata.me
+
+if [ -z "$(lsof /mnt/gotdata)" ]; then
+	echo "unmounting /mnt/gotdata ... "
+	sudo umount /mnt/gotdata
+	sleep 1
+	sudo rmdir /mnt/gotdata
+fi
