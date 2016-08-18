@@ -1,3 +1,6 @@
 #!/bin/bash
 
-iwconfig wlan0 | tr '"' '\n' | head -n 2 | tail -n 1
+if [ -z "$INTERFACE" ]; then
+	INTERFACE=$(ifconfig | grep -v "^ " | awk '{print $1}' | grep ^w)
+fi
+iwconfig $INTERFACE | tr '"' '\n' | head -n 2 | tail -n 1
