@@ -1,0 +1,9 @@
+#!/bin/bash
+
+find -name "*.cbz" | while read archive; do
+	echo "$archive"
+	dirname=$(echo $archive | sed 's/.cbz//g')
+	echo "extracting $archive to $dirname"
+	mkdir "$dirname"
+	7za x -o"$dirname" "$archive" && rm "$archive"
+done
