@@ -1,7 +1,7 @@
 #!/bin/bash
 
 find -name "*.cbz" | while read archive; do
-	echo "$archive"
+	echo -e "\n$archive"
 	dirname=$(echo $archive | sed 's/.cbz//g')
 	echo "extracting $archive to $dirname"
 	mkdir "$dirname"
