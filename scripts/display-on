@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ -n "$(which vbetool)" ]; then
+	sudo vbetool dpms on
+else
+	export DISPLAY=:0.0
+	xset dpms force on
+fi
