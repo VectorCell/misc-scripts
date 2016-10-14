@@ -1,0 +1,11 @@
+#!/bin/bash
+
+IFNAME=$(ifconfig | grep -v "^ " | awk '{print $1}' | grep ^e)
+if [ -z "$IFNAME" ]; then
+	IFNAME=$(ifconfig | grep -v "^ " | awk '{print $1}' | grep ^w)
+fi
+if [ -n "$IFNAME" ]; then
+	sudo etherwake -i $IFNAME D8:CB:8A:C6:C0:0F
+else
+	echo "unable to determine network interface"
+fi
