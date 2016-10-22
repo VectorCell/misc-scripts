@@ -1,0 +1,5 @@
+#!/bin/bash
+
+file"$1"
+
+ffmpeg -i "$file" -vf "cropdetect=24:16:0"
