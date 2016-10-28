@@ -1,5 +1,10 @@
 #!/bin/bash
 
+COMPPROG=pigz
+if[ -z "$(which $COMPPROG)" ]; then
+	COMPPROG=gzip
+fi
+
 # dir to back up
 if [ -z "$1" ]; then
 	echo "USAGE: backup-google-drive [DIR] [GOOGLE-DRIVE-DIR] [PASSFILE]"
@@ -58,7 +63,7 @@ echo "$size bytes"
 
 echo
 echo "creating backup tar at $backupdir/$filename ..."
-tar -c $dirbase | pv -s ${size} | gzip | aes-encrypt $passfile > $backupdir/$filename
+tar -c $dirbase | pv -s ${size} | $COMPPROG | aes-encrypt $passfile > $backupdir/$filename
 
 echo
 echo "pushing file to Google Drive ..."
