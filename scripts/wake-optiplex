@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo etherwake 00:08:74:14:0e:35
