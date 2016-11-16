@@ -5,8 +5,13 @@ if [ -z "$DIR" ]; then
 	DIR=.
 fi
 
+echo "analyzing $DIR ..."
+NUMFILES=$(find "$DIR" -type f | wc -l)
+count=0
+
 find "$DIR" -type f | sort | while read file; do
-	1>&2 echo "$file"
-	pv < "$file" | md5sum | tr -d '\-\n'
+	((count=count+1))
+	#1>&2 echo "$file"
+	pv -N "$count / $NUMFILES" < "$file" | md5sum | tr -d '\-\n'
 	echo "${file}"
 done
