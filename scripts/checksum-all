@@ -5,7 +5,7 @@ if [ -z "$DIR" ]; then
 	DIR=.
 fi
 
-echo "analyzing $DIR ..."
+1>&2 echo "analyzing $DIR ..."
 NUMFILES=$(find "$DIR" -type f | wc -l)
 count=0
 
