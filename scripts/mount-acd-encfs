@@ -21,7 +21,7 @@ fi
 # get mount points
 
 ENCFSMOUNTPOINT="$1"
-if [ -z "ENCFSMOUNTPOINT" ]; then
+if [ -z "$ENCFSMOUNTPOINT" ]; then
 	ENCFSMOUNTPOINT=/mnt/acd-dec
 	if [ ! -d "$ENCFSMOUNTPOINT" ]; then
 		sudo mkdir "$ENCFSMOUNTPOINT"
