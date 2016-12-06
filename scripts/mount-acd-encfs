@@ -24,20 +24,20 @@ ENCFSMOUNTPOINT="$1"
 if [ -z "$ENCFSMOUNTPOINT" ]; then
 	ENCFSMOUNTPOINT=/mnt/acd-dec
 	if [ ! -d "$ENCFSMOUNTPOINT" ]; then
-		sudo mkdir "$ENCFSMOUNTPOINT"
+		sudo mkdir "$ENCFSMOUNTPOINT" 2> /dev/null
 	fi
 fi
-sudo chown $(id -u):$(id -g) "$ENCFSMOUNTPOINT"
+sudo chown $(id -u):$(id -g) "$ENCFSMOUNTPOINT" 2> /dev/null
 echo "encfs: $ENCFSMOUNTPOINT"
 
 ACDMOUNTPOINT="$2"
 if [ -z "$ACDMOUNTPOINT" ]; then
 	ACDMOUNTPOINT=/mnt/acd
 	if [ ! -d "$ACDMOUNTPOINT" ]; then
-		sudo mkdir "$ACDMOUNTPOINT"
+		sudo mkdir "$ACDMOUNTPOINT" 2> /dev/null
 	fi
 fi
-sudo chown $(id -u):$(id -g) "$ACDMOUNTPOINT"
+sudo chown $(id -u):$(id -g) "$ACDMOUNTPOINT" 2> /dev/null
 echo "acd:   $ACDMOUNTPOINT"
 
 
