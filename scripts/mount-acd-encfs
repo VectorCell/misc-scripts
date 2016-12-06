@@ -28,6 +28,7 @@ if [ -z "ENCFSMOUNTPOINT" ]; then
 	fi
 fi
 sudo chown $(id -u):$(id -g) "$ENCFSMOUNTPOINT"
+echo "encfs: $ENCFSMOUNTPOINT"
 
 ACDMOUNTPOINT="$2"
 if [ -z "$ACDMOUNTPOINT" ]; then
@@ -37,6 +38,7 @@ if [ -z "$ACDMOUNTPOINT" ]; then
 	fi
 fi
 sudo chown $(id -u):$(id -g) "$ACDMOUNTPOINT"
+echo "acd:   $ACDMOUNTPOINT"
 
 
 # check if acd_cli is properly set up
