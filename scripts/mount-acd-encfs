@@ -52,17 +52,25 @@ fi
 
 # do the mounting
 
-echo "mounting acd to $ACDMOUNTPOINT"
-if [ ! -d acd ]; then
-	mkdir "$ACDMOUNTPOINT"
-fi
-acd_cli mount "$ACDMOUNTPOINT"
-
-if [ -e "$ACDMOUNTPOINT/enc" ]; then
-	echo "encrypted: $(realpath $ACDMOUNTPOINT)/enc"
-	echo "decrypted: $(realpath $ENCFSMOUNTPOINT)"
-	if [ ! -d dec ]; then
-		mkdir dec
+if [ -z "$(df | grep -E $ACDMOUNTPOINT$)" ]; then
+	echo "mounting acd to $ACDMOUNTPOINT"
+	if [ ! -d acd ]; then
+		mkdir "$ACDMOUNTPOINT"
 	fi
-	encfs "$(realpath $ACDMOUNTPOINT)/enc" "$(realpath $ENCFSMOUNTPOINT)"
+	acd_cli mount "$ACDMOUNTPOINT"
+else
+	echo "acd already mounted"
+fi
+
+if [ -z "$(df | grep -E $ENCFSMOUNTPOINT$)" ]; then
+	if [ -e "$ACDMOUNTPOINT/enc" ]; then
+		echo "encrypted: $(realpath $ACDMOUNTPOINT)/enc"
+		echo "decrypted: $(realpath $ENCFSMOUNTPOINT)"
+		if [ ! -d dec ]; then
+			mkdir dec
+		fi
+		encfs "$(realpath $ACDMOUNTPOINT)/enc" "$(realpath $ENCFSMOUNTPOINT)"
+	fi
+else
+	echo "acd encfs already mounted"
 fi
