@@ -25,6 +25,7 @@ if [ -z "ENCFSMOUNTPOINT" ]; then
 	ENCFSMOUNTPOINT=/mnt/acd-dec
 	if [ ! -d "$ENCFSMOUNTPOINT" ]; then
 		sudo mkdir "$ENCFSMOUNTPOINT"
+		sudo chown $(id -u):$(id -g) "$ENCFSMOUNTPOINT"
 	fi
 fi
 
@@ -33,6 +34,7 @@ if [ -z "$ACDMOUNTPOINT" ]; then
 	ACDMOUNTPOINT=/mnt/acd
 	if [ ! -d "$ACDMOUNTPOINT" ]; then
 		sudo mkdir "$ACDMOUNTPOINT"
+		sudo chown $(id -u):$(id -g) "$ACDMOUNTPOINT"
 	fi
 fi
 
