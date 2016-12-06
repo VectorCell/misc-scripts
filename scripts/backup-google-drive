@@ -79,7 +79,7 @@ echo "deleting old backups from Google Drive ..."
 entrynum=0
 drive ls | tr '/' ' ' | rev | awk '{print $1}' | rev | grep -E "${dirbase}_" | sort | tac | while read entry; do
 	((entrynum=entrynum+1))
-	if [ $entrynum -gt 2 ]; then
+	if [ $entrynum -gt 5 ]; then
 		echo "removing $entry from Google Drive ..."
 		yes | drive delete $entry
 	else

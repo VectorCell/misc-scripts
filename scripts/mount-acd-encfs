@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# get containing directory of script
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+dir=$(dirname $(readlink -f $DIR/$(basename "$0")))
+
+
+# check dependencies
+
+if [ -z "$(which acd_cli)" ]; then
+	if [ -z "$(which pip3)" ]; then
+		sudo apt install python3 python3-pip
+	fi
+	sudo pip3 install --upgrade --pre acdcli
+fi
+if [ -z "$(which encfs)" ]; then
+	sudo apt install encfs
+fi
+
+
+# get mount points
+
+ENCFSMOUNTPOINT="$1"
+if [ -z "ENCFSMOUNTPOINT" ]; then
+	ENCFSMOUNTPOINT=/mnt/acd-dec
+	if [ ! -d "$ENCFSMOUNTPOINT" ]; then
+		sudo mkdir "$ENCFSMOUNTPOINT"
+	fi
+fi
+
+ACDMOUNTPOINT="$2"
+if [ -z "$ACDMOUNTPOINT" ]; then
+	ACDMOUNTPOINT=/mnt/acd
+	if [ ! -d "$ACDMOUNTPOINT" ]; then
+		sudo mkdir "$ACDMOUNTPOINT"
+	fi
+fi
+
+
+# check if acd_cli is properly set up
+
+if [ ! -e $HOME/.cache/acd_cli/oauth_data ]; then
+	echo "ERROR: acd_cli needs to be initlialized"
+	acd_cli init
+	acd_cli sync
+fi
+
+
+# do the mounting
+
+echo "mounting acd to $ACDMOUNTPOINT"
+if [ ! -d acd ]; then
+	mkdir "$ACDMOUNTPOINT"
+fi
+acd_cli mount "$ACDMOUNTPOINT"
+
+if [ -e "$ACDMOUNTPOINT/enc" ]; then
+	echo "encrypted: $(realpath $ACDMOUNTPOINT)/enc"
+	echo "decrypted: $(realpath $ENCFSMOUNTPOINT)"
+	if [ ! -d dec ]; then
+		mkdir dec
+	fi
+	encfs "$(realpath $ACDMOUNTPOINT)/enc" "$(realpath $ENCFSMOUNTPOINT)"
+fi
