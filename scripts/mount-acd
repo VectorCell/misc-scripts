@@ -13,9 +13,6 @@ if [ -z "$(which acd_cli)" ]; then
 	fi
 	sudo pip3 install --upgrade --pre acdcli
 fi
-if [ -z "$(which encfs)" ]; then
-	sudo apt install encfs
-fi
 if [ -z "$(which realpath)" ]; then
 	sudo apt install realpath
 fi
@@ -23,17 +20,7 @@ fi
 
 # get mount points
 
-ENCFSMOUNTPOINT="$1"
-if [ -z "$ENCFSMOUNTPOINT" ]; then
-	ENCFSMOUNTPOINT=/mnt/acd-dec
-	if [ ! -d "$ENCFSMOUNTPOINT" ]; then
-		sudo mkdir "$ENCFSMOUNTPOINT" 2> /dev/null
-	fi
-fi
-sudo chown $(id -u):$(id -g) "$ENCFSMOUNTPOINT" 2> /dev/null
-echo "encfs: $ENCFSMOUNTPOINT"
-
-ACDMOUNTPOINT="$2"
+ACDMOUNTPOINT="$1"
 if [ -z "$ACDMOUNTPOINT" ]; then
 	ACDMOUNTPOINT=/mnt/acd
 	if [ ! -d "$ACDMOUNTPOINT" ]; then
@@ -63,17 +50,4 @@ if [ -z "$(df | grep -E $ACDMOUNTPOINT$)" ]; then
 	acd_cli mount "$ACDMOUNTPOINT"
 else
 	echo "acd already mounted"
-fi
-
-if [ -z "$(df | grep -E $ENCFSMOUNTPOINT$)" ]; then
-	if [ -e "$ACDMOUNTPOINT/enc" ]; then
-		echo "encrypted: $(realpath $ACDMOUNTPOINT)/enc"
-		echo "decrypted: $(realpath $ENCFSMOUNTPOINT)"
-		if [ ! -d dec ]; then
-			mkdir dec
-		fi
-		encfs "$(realpath $ACDMOUNTPOINT)/enc" "$(realpath $ENCFSMOUNTPOINT)"
-	fi
-else
-	echo "acd encfs already mounted"
 fi
