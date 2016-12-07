@@ -36,12 +36,12 @@ echo "acd:   $ACDMOUNTPOINT"
 if [ ! -e $HOME/.cache/acd_cli/oauth_data ]; then
 	echo "ERROR: acd_cli needs to be initlialized"
 	acd_cli init
-	acd_cli sync
 fi
 
 
 # do the mounting
 
+acd_cli sync
 if [ -z "$(df | grep -E $ACDMOUNTPOINT$)" ]; then
 	echo "mounting acd to $ACDMOUNTPOINT"
 	if [ ! -d acd ]; then
