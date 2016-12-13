@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo fstrim -v /mnt/ssd
+sudo fstrim -v /media/bismith/ssd
