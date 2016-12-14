@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -z "$(groups | grep disk)" ]; then
+	echo "ERROR: You must be a member of group 'disk' to proceed"
+	exit 1
+fi
+
+if [ -z "$2" ]; then
+	echo "ERROR: usage: vbox-usb-vmdk VMDKFILE DISK"
+	exit 1
+fi
+
+VBoxManage internalcommands createrawvmdk -filename "$1" -rawdisk "$2"
