@@ -8,4 +8,5 @@ if [ -n "$1" ]; then
 	outfile="$1"
 fi
 
-avconv -f x11grab -r 25 -s $resolution -i :0.0+0,0 -vcodec libx264 -pre lossless_ultrafast -threads 0 screen.mkv
+#avconv -f x11grab -r 25 -s $resolution -i :0.0+0,0 -vcodec libx264 -pre lossless_ultrafast -threads 0 "$1"
+ffmpeg -video_size $resolution -framerate 25 -f x11grab -i :0.0 -c:v libx264 -preset veryfast "$1"
