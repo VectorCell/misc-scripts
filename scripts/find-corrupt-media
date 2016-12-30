@@ -1,0 +1,8 @@
+#!/bin/bash
+
+find "$1" -type f | while read file; do
+	CORRUPT=$(ffprobe "$file" |& grep -E "Invalid data found when processing input")
+	if [ -n "$CORRUPT" ]; then
+		echo "$file"
+	fi
+done
