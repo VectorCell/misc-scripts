@@ -1,0 +1,14 @@
+#!/bin/bash
+
+linkdir="."
+
+find "$1" -type f | while read file; do
+	RES=$(ffprobe "$file" |& grep Stream | grep Video | tr ' ' '\n' | grep -E "^[0-9]+x[0-9]+,*$" | tr -d ',' | tr '\x' ' ')
+	WIDTH=$(echo $RES | awk '{print $1}')
+	HEIGHT=$(echo $RES | awk '{print $2}')
+	echo "$file is ${WIDTH}x${HEIGHT}"
+	if [ "$WIDTH" -lt "$HEIGHT" ]; then
+		#rsync -rP "$file" "$linkdir/"
+		ln -s "$file"
+	fi
+done
