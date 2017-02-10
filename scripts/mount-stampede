@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mountssh stampede.tacc.utexas.edu /home1/04638/bismith /mnt/stampede
