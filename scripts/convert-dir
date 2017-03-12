@@ -38,7 +38,7 @@ find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$" | while rea
 	destfile="${destdir}conv/$(echo $file | rev | colrm 1 4 | rev).mkv"
 	echo "$file -> $destfile"
 	if [ ! -e "$destfile" ]; then
-		echo -e "$convprog -i \"$file\" -c:v libx264 -c:a copy \"$destfile\"" >> $tempscript
+		echo -e "$convprog -n -i \"$file\" -c:v libx264 -c:a copy \"$destfile\"" >> $tempscript
 	fi
 done
 
