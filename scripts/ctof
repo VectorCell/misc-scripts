@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+
+import sys
+
+def main():
+	for line in sys.stdin:
+		line = line.strip()
+		if line:
+			f = int(line)
+			c = ((9 * f) / 5) + 32
+			print(c)
+
+if __name__ == '__main__':
+	main()
