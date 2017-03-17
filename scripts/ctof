@@ -3,12 +3,15 @@
 import sys
 
 def main():
+	should_round = '-r' in sys.argv
 	for line in sys.stdin:
 		line = line.strip()
 		if line:
-			f = float(line)
-			c = ((9 * f) / 5) + 32
-			print(c)
+			c = float(line)
+			f = ((9 * c) / 5) + 32
+			if should_round:
+				f = round(f)
+			print(f)
 
 if __name__ == '__main__':
 	main()
