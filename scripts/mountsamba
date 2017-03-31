@@ -5,7 +5,7 @@ localuser="$(whoami)"
 read -p "Server: " server
 read -p "Share: " share
 read -p "Username: " username
-read -p "Password: " password
+read -sp "Password: " password
 
 if [ ! -d /mnt/$share ]; then
 	sudo mkdir /mnt/$share
