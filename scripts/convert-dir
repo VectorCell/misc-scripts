@@ -34,15 +34,31 @@ tempscript="/tmp/convert-$RANDOM"
 
 echo "converting files from $sourcedir ..."
 echo "#!/bin/bash" >> $tempscript
-find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$" | while read file; do
-	destfile="${destdir}conv/$(echo $file | rev | colrm 1 4 | rev).mkv"
-	echo "$file -> $destfile"
+find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$|.mkv$" | while read srcfile; do
+	destfile="${destdir}conv/$(echo $srcfile | rev | colrm 1 4 | rev).mkv"
+
+	hassubtrack="false"
+	if [ -n "$(ffprobe $srcfile |& grep Subtitle)" ]; then
+		hassubtrack="true"
+	fi
+
+	for ext in {srt,sub,idx}; do
+		subfile="$(echo $srcfile | sed s/.mkv/.$ext/g)"
+		if [ -f "$subfile" ]; then
+			echo -e cp "$subfile" "${destdir}conv/${subfile}" | tee /dev/stderr >> $tempscript
+		fi
+	done
+
+	echo "$srcfile -> $destfile"
 	if [ ! -e "$destfile" ]; then
-		echo -e "$convprog -n -i \"$file\" -c:v libx265 -c:a copy \"$destfile\"" >> $tempscript
+		if [ $hassubtrack == "true" ]; then
+			echo -e "$convprog -n -i \"$srcfile\" -c:v libx265 -c:a copy -c:s copy \"$destfile\"" | tee /dev/stderr >> $tempscript
+		else
+			echo -e "$convprog -n -i \"$srcfile\" -c:v libx265 -c:a copy \"$destfile\"" | tee /dev/stderr >> $tempscript
+		fi
 	fi
 done
 
-cat $tempscript
 bash $tempscript
 
 rm $tempscript
