@@ -49,7 +49,7 @@ find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$|.mkv$" | whi
 				echo -e cp "$subfile" "${destdir}conv/${subfile}" | tee /dev/stderr >> $tempscript
 			fi
 		done
-	fi
+	done
 
 	echo "$srcfile -> $destfile"
 	if [ ! -e "$destfile" ]; then
