@@ -45,7 +45,7 @@ find "$sourcedir" -type f | sort | grep -E ".mp4$|.avi$|.mpg$|.m4v$|.mkv$" | whi
 	for srcext in {mp4,avi,mpg,m4v,mkv}; do
 		for subext in {srt,sub,idx}; do
 			subfile="$(echo $srcfile | sed s/.${srcext}$/.$subext/g)"
-			if [ -f "$subfile" ]; then
+			if [ "$subfile" != "$srcfile" ] && [ -f "$subfile" ]; then
 				echo -e cp "$subfile" "${destdir}conv/${subfile}" | tee /dev/stderr >> $tempscript
 			fi
 		done
