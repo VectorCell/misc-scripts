@@ -1,3 +1,6 @@
 #!/bin/bash
 
-ffmpeg -i "$1" -vf "cropdetect=24:16:0" -an -f null /dev/null |& grep crop | rev | awk '{print $1,$2}' | rev
+DURATION=$(ffprobe "$1" |& grep Duration | tr -d ',' | awk '{print $2}')
+DURATIONS=$(echo "$DURATION" | awk -F: '{ print ($1 * 3600) + ($2 * 60) + $3 }')
+
+ffmpeg -i "$1" -vf "cropdetect=24:16:0" -an -f null /dev/null |& grep crop | awk "{print \"duration:$DURATIONS\",\$(NF-1),\$NF}"
