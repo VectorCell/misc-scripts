@@ -1,0 +1,3 @@
+#!/bin/bash
+
+tree -C "$1" | less -R
