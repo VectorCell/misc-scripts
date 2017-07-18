@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DIR="$1"
+if [ -z "$DIR" ]; then
+	DIR=.
+fi
+
+find "$DIR" -type f | sort | while read FILE; do
+	(echo "$FILE"; ffprobe "$FILE" |& grep Stream) | less
+done
