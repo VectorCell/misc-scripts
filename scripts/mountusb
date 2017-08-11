@@ -19,9 +19,9 @@ fi
 
 sudo blkid | grep -vE "System|UDF" | while read line; do
 
-	DISK=$(echo "$line" | tr ' =' '\n ' | grep "/dev/" | tr -d ':')
-	LABEL=$(echo "$line" | tr ' =' '\n ' | grep LABEL | tr -d '"' | awk '{print $2}')
-	TYPE=$(echo "$line" | tr ' =' '\n ' | grep TYPE | grep -v SEC_TYPE | tr -d '"' | awk '{print $2}')
+	DISK=$(echo "$line" | tr ' =' '\n ' | grep "/dev/" | tr -d ':' | head -n 1)
+	LABEL=$(echo "$line" | tr ' =' '\n ' | grep LABEL | tr -d '"' | awk '{print $2}' | head -n 1)
+	TYPE=$(echo "$line" | tr ' =' '\n ' | grep TYPE | grep -v SEC_TYPE | tr -d '"' | awk '{print $2}' | head -n 1)
 
 	# mount each disk
 	if [ -n "$LABEL" ]; then
