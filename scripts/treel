@@ -1,7 +1,3 @@
 #!/bin/bash
 
-if [ -n "$1" ]; then
-	tree -C "$1" | less -R
-else
-	tree -C | less -R
-fi
+tree -C "$@" | less -R
