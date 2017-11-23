@@ -1,0 +1,10 @@
+#!/bin/bash
+
+SRCFILE="$1"
+if [ -z "$(ffprobe \"$SRCFILE\" | grep \"Closed Captions\")" ]; then
+	echo "ERROR: $SRCFILE doesn't appear to have closed captions."
+	exit 1
+fi
+
+OUTFILE="$SRCFILE.srt"
+ffmpeg -f lavfi -i "movie=$SRCFILE[out0+subcc]" -map s "$OUTFILE"
