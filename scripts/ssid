@@ -1,6 +1,8 @@
 #!/bin/bash
 
-if [ -z "$INTERFACE" ]; then
-	INTERFACE=$(ifconfig | grep -v "^ " | awk '{print $1}' | grep ^w)
+if [ -n "$(which isconfig)" ]; then
+	if [ -z "$INTERFACE" ]; then
+		INTERFACE=$(ifconfig | grep -v "^ " | awk '{print $1}' | grep ^w)
+	fi
+	iwconfig $INTERFACE | tr '"' '\n' | head -n 2 | tail -n 1
 fi
-iwconfig $INTERFACE | tr '"' '\n' | head -n 2 | tail -n 1
