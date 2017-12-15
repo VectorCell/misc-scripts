@@ -5,7 +5,7 @@ if [ -z "$DIR" ]; then
 	DIR=.
 fi
 
-find "$DIR" -type f | sort | while read FILE; do
+find "$DIR" -type f ! -name "*\.\!ut" | sort | while read FILE; do
 	echo "$FILE"
 	ffprobe "$FILE" |& grep Stream
 	echo
