@@ -3,7 +3,7 @@
 SIZE=$(du -bd 0 "$@" | awk '{s += $1} END {printf "%.0f", s}')
 
 if [ ! -t 1 ]; then
-	tar -c "$@" | pv -s $SIZE
+	tar -c "$@" | pv -Ws $SIZE
 else
 	echo "ERROR: cannot output to a terminal"
 	exit 1
