@@ -1,0 +1,23 @@
+#!/bin/bash
+
+user=$(whoami)
+
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+	echo "usage: mountdir [servername] [serverdir] [mountdir]"
+	echo "example: mountdir vps.bismith.net /home/bismith /mnt/bismith"
+else
+	server="$1"
+	serverdir="$2"
+	mountdir="$3"
+
+	if [ ! -d $mountdir ]; then
+		sudo mkdir $mountdir
+	fi
+
+	if [ $(stat -c "%u" $mountdir) == $(id -u $user) ]; then
+		echo "$mountdir already mounted, owned by $user"
+	else
+		echo "mounting $mountdir ($server:$serverdir) ..."
+		sudo sshfs ${user}@${server}:$serverdir $mountdir -p 443 -o uid=$(id -u $user),gid=$(id -g $user),allow_other,IdentityFile=/home/$user/.ssh/id_rsa
+	fi
+fi
