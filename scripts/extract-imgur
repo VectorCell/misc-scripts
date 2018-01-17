@@ -1,7 +1,7 @@
 #!/bin/bash
 
 find -name "Imgur Album*.zip" | while read archive; do
-	dirname=$(echo $archive | colrm 1 2 | rev | colrm 1 12 | rev | tr ' ' '-')
+	dirname=$(echo $archive | rev | colrm 1 4 | rev | tr ' ' '-')
 	echo "extracting $archive to $dirname"
 	mkdir "$dirname"
 	7za x -o"$dirname" "$archive" && rm "$archive"
