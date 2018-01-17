@@ -1,6 +1,6 @@
 #!/bin/bash
 
-find -name "*\ -\ Imgur.zip" | while read archive; do
+find -name "Imgur Album*.zip" | while read archive; do
 	dirname=$(echo $archive | colrm 1 2 | rev | colrm 1 12 | rev | tr ' ' '-')
 	echo "extracting $archive to $dirname"
 	mkdir "$dirname"
