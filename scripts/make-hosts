@@ -78,16 +78,20 @@ else
 		cat $hostsfile >> $tempfile
 		printf "\n\n" >> $tempfile
 
+		echo "fetching vpn subnet ..."
 		curl http://vpn.bismith.net/subnets/vpn.txt 2> /dev/null >> $tempfile
 		if [ "$?" -ne "0" ]; then
 			echo "ERROR: unable to fetch subnet information"
 			exit 1
 		fi
+		
 		#curl http://vpn.bismith.net/subnets/apt.txt 2> /dev/null >> $tempfile
 		#if [ "$?" -ne "0" ]; then
 		#	echo "ERROR: unable to fetch subnet information"
 		#	exit 1
 		#fi
+
+		echo "fetching home subnet ..."
 		curl http://vpn.bismith.net/subnets/home.txt 2> /dev/null >> $tempfile
 		if [ "$?" -ne "0" ]; then
 			echo "ERROR: unable to fetch subnet information"

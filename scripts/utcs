@@ -3,7 +3,7 @@
 if [ -n "$1" ]; then
 	machine="$1"
 else
-	machine="die-zauberflote"
+	machine="the-professor"
 fi
 if [ -n "$2" ]; then
 	user="$2"
