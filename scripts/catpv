@@ -1,0 +1,10 @@
+#!/bin/bash
+
+SIZE=$(du -bd 0 "$@" | awk '{s += $1} END {printf "%.0f", s}')
+
+if [ ! -t 1 ]; then
+	cat "$@" | pv -Ws $SIZE
+else
+	echo "ERROR: refusing to output to a terminal"
+	exit 1
+fi
