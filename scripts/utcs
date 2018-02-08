@@ -5,13 +5,10 @@ REMOTEPROG=mosh
 USER=$(whoami)
 if [ -n "$1" ]; then
 	MACHINE="$1"
+	MOUNT="false"
 else
 	MACHINE="the-professor"
-fi
-
-MOUNT="false"
-if [ -n "$2" ]; then
-	USER="true"
+	MOUNT="true"
 fi
 
 if [ "$MOUNT" == "true" ]; then
