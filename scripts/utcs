@@ -1,34 +1,37 @@
 #!/bin/bash
 
+REMOTEPROG=mosh
+
+USER=$(whoami)
 if [ -n "$1" ]; then
-	machine="$1"
+	MACHINE="$1"
 else
-	machine="the-professor"
+	MACHINE="the-professor"
 fi
+
+MOUNT="true"
 if [ -n "$2" ]; then
-	user="$2"
-else
-	user=$(whoami)
+	USER="false"
 fi
 
-if [ -z "$(df | grep utcs)" ]; then
-	mountssh $machine.cs.utexas.edu /v/filer4b/v38q001/$user /mnt/utcs
-fi
-if [ -z "$(df | grep utcs-$machine)" ]; then
-	mountssh $machine.cs.utexas.edu /var/local /mnt/utcs-$machine
+if [ "$MOUNT" == "true" ]; then
+	if [ -z "$(df | grep utcs)" ]; then
+		mountssh $MACHINE.cs.utexas.edu /v/filer4b/v38q001/$USER /mnt/utcs
+	fi
+	if [ -z "$(df | grep utcs-$MACHINE)" ]; then
+		mountssh $MACHINE.cs.utexas.edu /var/local /mnt/utcs-$MACHINE
+	fi
 fi
 
-mosh $machine.cs.utexas.edu
+$REMOTEPROG $MACHINE.cs.utexas.edu
 
-if [ -z "$(lsof /mnt/utcs)" ]; then
-	echo "unmounting /mnt/utcs ... "
-	sudo umount /mnt/utcs
-	sleep 1
-	sudo rmdir /mnt/utcs
-fi
-if [ -z "$(lsof /mnt/utcs-$machine)" ]; then
-	echo "unmountint /mnt/utcs-$machine ... "
-	sudo umount /mnt/utcs-$machine
-	sleep 1
-	sudo rmdir /mnt/utcs-$machine
+if [ "$MOUNT" == "true" ]; then
+	if [ -z "$(lsof /mnt/utcs)" ]; then
+		echo "unmounting /mnt/utcs ... "
+		sudo umount /mnt/utcs && sudo rmdir /mnt/utcs
+	fi
+	if [ -z "$(lsof /mnt/utcs-$MACHINE)" ]; then
+		echo "unmountint /mnt/utcs-$MACHINE ... "
+		sudo umount /mnt/utcs-$MACHINE && sudo rmdir /mnt/utcs-$MACHINE
+	fi
 fi
