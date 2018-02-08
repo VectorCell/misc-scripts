@@ -9,9 +9,9 @@ else
 	MACHINE="the-professor"
 fi
 
-MOUNT="true"
+MOUNT="false"
 if [ -n "$2" ]; then
-	USER="false"
+	USER="true"
 fi
 
 if [ "$MOUNT" == "true" ]; then
@@ -26,11 +26,11 @@ fi
 $REMOTEPROG $MACHINE.cs.utexas.edu
 
 if [ "$MOUNT" == "true" ]; then
-	if [ -z "$(lsof /mnt/utcs)" ]; then
+	if [ -z "$(df /mnt/utcs)" ]; then
 		echo "unmounting /mnt/utcs ... "
 		sudo umount /mnt/utcs && sudo rmdir /mnt/utcs
 	fi
-	if [ -z "$(lsof /mnt/utcs-$MACHINE)" ]; then
+	if [ -z "$(df /mnt/utcs-$MACHINE)" ]; then
 		echo "unmountint /mnt/utcs-$MACHINE ... "
 		sudo umount /mnt/utcs-$MACHINE && sudo rmdir /mnt/utcs-$MACHINE
 	fi
