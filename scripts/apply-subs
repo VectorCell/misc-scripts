@@ -1,0 +1,26 @@
+#!/bin/bash
+
+DESTDIR="$1"
+if [ -z "$DESTDIR" ]; then
+	echo "ERROR: must supply destination directory"
+	exit 1
+fi
+
+TEST="$2"
+
+find -name "*srt" | sort | while read SRCFILE; do
+	EPCODE=$(echo "$SRCFILE" | tr '._ ' '\n\n\n' | grep -i "S[0-9][0-9]E[0-9][0-9]")
+	DESTFILE=$(find "$DESTDIR" -iname "*${EPCODE}*" | sed 's/mkv$/srt/g')
+	if [ -n "$DESTFILE" ] && [ ! -e "$DESTFILE" ]; then
+		echo "$EPCODE :: $SRCFILE -> $DESTFILE"
+
+		if [ -z "$TEST" ]; then
+			mv "$SRCFILE" "$DESTFILE"
+		else
+			echo mv "$SRCFILE" "$DESTFILE"
+		fi
+	else
+		echo "ERROR: [$SRCFILE] [$DESTFILE]"
+	fi
+	echo
+done
