@@ -1,12 +1,20 @@
 #!/bin/bash
 
-DIR="$1"
-if [ -z "$DIR" ]; then
-	DIR=.
-fi
+DIR=.
+GREPSTRING="Stream"
+for ARG in $@; do
+	if [ "$ARG" == "-d" ]; then
+		GREPSTRING="$GREPSTRING|Duration"
+	elif [ -d "$ARG" ]; then
+		DIR="$ARG"
+	else
+		echo "ERROR: invalid arg: $ARG"
+		exit 1
+	fi
+done
 
 find -L "$DIR" -type f ! -name "*\.\!ut" | sort | while read FILE; do
 	echo "$FILE"
-	ffprobe "$FILE" |& grep Stream
+	ffprobe "$FILE" |& grep -E "$GREPSTRING"
 	echo
 done
