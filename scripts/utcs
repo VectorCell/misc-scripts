@@ -23,12 +23,6 @@ fi
 $REMOTEPROG $MACHINE.cs.utexas.edu
 
 if [ "$MOUNT" == "true" ]; then
-	if [ -z "$(df /mnt/utcs)" ]; then
-		echo "unmounting /mnt/utcs ... "
-		sudo umount /mnt/utcs && sudo rmdir /mnt/utcs
-	fi
-	if [ -z "$(df /mnt/utcs-$MACHINE)" ]; then
-		echo "unmountint /mnt/utcs-$MACHINE ... "
-		sudo umount /mnt/utcs-$MACHINE && sudo rmdir /mnt/utcs-$MACHINE
-	fi
+	sudo umount /mnt/utcs && sudo rmdir /mnt/utcs
+	sudo umount /mnt/utcs-$MACHINE && sudo rmdir /mnt/utcs-$MACHINE
 fi
