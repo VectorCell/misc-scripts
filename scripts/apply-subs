@@ -15,9 +15,9 @@ find -name "*srt" | sort | while read SRCFILE; do
 		echo "$EPCODE :: $SRCFILE -> $DESTFILE"
 
 		if [ -z "$TEST" ]; then
-			mv "$SRCFILE" "$DESTFILE"
+			cp "$SRCFILE" "$DESTFILE"
 		else
-			echo mv "$SRCFILE" "$DESTFILE"
+			echo cp "$SRCFILE" "$DESTFILE"
 		fi
 	else
 		echo "ERROR: [$SRCFILE] [$DESTFILE]"
