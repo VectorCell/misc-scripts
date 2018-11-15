@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ -z "$(which xcalib)" ]; then
+	sudo apt install -f xcalib
+fi
+
+xcalib -i -a
