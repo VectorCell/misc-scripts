@@ -1,0 +1,7 @@
+#!/bin/bash
+
+find . -type f -printf "%S\t%p\n" \
+	| sort -nk 1 \
+	| grep ^1 \
+	| tr '\t' '\n' \
+	| grep "^\."
