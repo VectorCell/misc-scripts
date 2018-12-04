@@ -39,9 +39,10 @@ def main():
 	with open(sys.argv[1]) as infile:
 		src = infile.read()
 	subfixer = SRTTimeMultiplier(src)
-	fixed = subfixer.multiply(100)
+	fixed = subfixer.multiply(90)
 	for line in fixed.split("\n"):
-		print("fixed:", line)
+		print(line)
+		# print("fixed:", line)
 
 if __name__ == "__main__":
 	main()
