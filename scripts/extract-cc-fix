@@ -42,7 +42,6 @@ def main():
 	fixed = subfixer.multiply(90)
 	for line in fixed.split("\n"):
 		print(line)
-		# print("fixed:", line)
 
 if __name__ == "__main__":
 	main()
