@@ -15,6 +15,6 @@ done
 
 find -L "$DIR" -type f ! -name "*\.\!ut" | sort | while read FILE; do
 	echo "$FILE"
-	ffprobe "$FILE" |& grep -E "$GREPSTRING"
+	ffprobe "$FILE" |& grep -v "^\[" | grep -E "$GREPSTRING"
 	echo
 done
