@@ -1,5 +1,6 @@
 #!/bin/bash
 
+JUSTFILES="FALSE"
 DIR=.
 GREPSTRING="Stream"
 for ARG in $@; do
@@ -7,14 +8,27 @@ for ARG in $@; do
 		GREPSTRING="$GREPSTRING|Duration"
 	elif [ -d "$ARG" ]; then
 		DIR="$ARG"
+	elif [ -f "$ARG" ]; then
+		JUSTFILES="TRUE"
+		ffprobe "$ARG" |& grep -E "$GREPSTRING"
 	else
 		echo "ERROR: invalid arg: $ARG"
 		exit 1
 	fi
 done
 
+<<<<<<< HEAD
+if [ "$JUSTFILES" == "FALSE" ]; then
+	find -L "$DIR" -type f ! -name "*\.\!ut" | sort | while read FILE; do
+		echo "$FILE"
+		ffprobe "$FILE" |& grep -E "$GREPSTRING"
+		echo
+	done
+fi
+=======
 find -L "$DIR" -type f ! -name "*\.\!ut" | sort | while read FILE; do
 	echo "$FILE"
 	ffprobe "$FILE" |& grep -v "^\[" | grep -E "$GREPSTRING"
 	echo
 done
+>>>>>>> 1d1e3c0487e543c42264ae1cbcd30acaf9582878
