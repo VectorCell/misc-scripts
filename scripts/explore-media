@@ -17,7 +17,6 @@ for ARG in $@; do
 	fi
 done
 
-<<<<<<< HEAD
 if [ "$JUSTFILES" == "FALSE" ]; then
 	find -L "$DIR" -type f ! -name "*\.\!ut" | sort | while read FILE; do
 		echo "$FILE"
@@ -25,10 +24,10 @@ if [ "$JUSTFILES" == "FALSE" ]; then
 		echo
 	done
 fi
-=======
+
 find -L "$DIR" -type f ! -name "*\.\!ut" | sort | while read FILE; do
 	echo "$FILE"
 	ffprobe "$FILE" |& grep -v "^\[" | grep -E "$GREPSTRING"
 	echo
 done
->>>>>>> 1d1e3c0487e543c42264ae1cbcd30acaf9582878
+
