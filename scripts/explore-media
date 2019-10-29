@@ -10,6 +10,7 @@ for ARG in $@; do
 		DIR="$ARG"
 	elif [ -f "$ARG" ]; then
 		JUSTFILES="TRUE"
+		echo "$ARG"
 		ffprobe "$ARG" |& grep -E "$GREPSTRING"
 	else
 		echo "ERROR: invalid arg: $ARG"
@@ -24,10 +25,4 @@ if [ "$JUSTFILES" == "FALSE" ]; then
 		echo
 	done
 fi
-
-find -L "$DIR" -type f ! -name "*\.\!ut" | sort | while read FILE; do
-	echo "$FILE"
-	ffprobe "$FILE" |& grep -v "^\[" | grep -E "$GREPSTRING"
-	echo
-done
 
