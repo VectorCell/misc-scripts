@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ -n "$1" ]; then
-	openssl enc -aes-256-cbc -salt -pass file:"$1"
+	openssl enc -aes-256-cbc -pdkdf2 -salt -pass file:"$1"
 else
-	# will prompt for password 
-	openssl enc -aes-256-cbc -salt
+	# will prompt for password
+	openssl enc -aes-256-cbc -pbkdf2 -salt
 fi
