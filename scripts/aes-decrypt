@@ -1,8 +1,25 @@
 #!/bin/bash
 
+VERSION=$(openssl version | awk '{print $2}')
+VERSION_MAJOR=$(echo $VERSION | tr '.' ' ' | awk '{print $1}')
+VERSION_MINOR=$(echo $VERSION | tr '.' ' ' | awk '{print $2}')
+
 if [ -n "$1" ]; then
-	openssl enc -d -aes-256-cbc -pbkdf2 -salt -pass file:"$1"
+	if [ $VERSION_MAJOR == 1 ] && [ $VERSION_MINOR -gt 0 ]; then
+		# newer openssl
+		openssl enc -d -aes-256-cbc -pbkdf2 -salt -pass file:"$1"
+	elif [ $VERSION_MAJOR == 1 ] && [ $VERSION_MINOR == 0 ]; then
+		# openssl 1.0.x, in Ubuntu 16.04 LTS
+		openssl enc -d -aes-256-cbc -salt -pass file:"$1"
+	fi
 else
 	# will prompt for password
-	openssl enc -d -aes-256-cbc -pbkdf2 -salt
+	if [ $VERSION_MAJOR == 1 ] && [ $VERSION_MINOR -gt 0 ]; then
+		# newer openssl
+		openssl enc -d -aes-256-cbc -pbkdf2 -salt
+	elif [ $VERSION_MAJOR == 1 ] && [ $VERSION_MINOR == 0 ]; then
+		# openssl 1.0.x, in Ubuntu 16.04 LTS
+		openssl enc -d -aes-256-cbc -salt
+	fi
+
 fi
