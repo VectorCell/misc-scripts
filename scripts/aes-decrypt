@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#gpg -d --s2k-mode 3 --s2k-count 65011712 --s2k-digest-algo SHA512 --s2k-cipher-algo AES256
+gpg -d -
+exit $?
+
+# this is the old script, which has been broken due to openssl:
+
 VERSION=$(openssl version | awk '{print $2}')
 VERSION_MAJOR=$(echo $VERSION | tr '.' ' ' | awk '{print $1}')
 VERSION_MINOR=$(echo $VERSION | tr '.' ' ' | awk '{print $2}')
