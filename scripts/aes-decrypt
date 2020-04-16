@@ -1,8 +1,18 @@
 #!/bin/bash
 
-#gpg -d --s2k-mode 3 --s2k-count 65011712 --s2k-digest-algo SHA512 --s2k-cipher-algo AES256
-gpg -d -
-exit $?
+# gpg is slow, appears to not use AES-NI
+
+if [ -n "$1" ]; then
+	gpg2 \
+		-d \
+		--batch \
+		--passphrase-file "$1" \
+		-
+	exit $?
+else
+	gpg2 -d -
+	exit $?
+fi
 
 # this is the old script, which has been broken due to openssl:
 

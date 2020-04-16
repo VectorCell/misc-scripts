@@ -5,9 +5,32 @@ if [ -t 1 ]; then
 	exit 1
 fi
 
-#gpg --s2k-mode 3 --s2k-count 65011712 --s2k-digest-algo SHA512 --s2k-cipher-algo AES256
-gpg --symmetric --cipher-algo AES256 -
-exit $?
+# gpg is slow, appears to not use AES-NI
+
+if [ -n "$1" ]; then
+	gpg2 \
+		--compress-algo none \
+		--symmetric \
+		--s2k-mode 3 \
+		--s2k-count 65011712 \
+		--s2k-digest-algo SHA512 \
+		--s2k-cipher-algo AES256 \
+		--cipher-algo AES256 \
+		--batch \
+		--passphrase-file "$1" \
+		-
+	exit $?
+else
+	gpg2 \
+		--symmetric \
+		--s2k-mode 3 \
+		--s2k-count 65011712 \
+		--s2k-digest-algo SHA512 \
+		--s2k-cipher-algo AES256 \
+		--cipher-algo AES256 \
+		-
+	exit $?
+fi
 
 # this is the old script, which has been broken due to openssl:
 
