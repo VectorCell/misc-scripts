@@ -2,15 +2,20 @@
 
 # gpg is slow, appears to not use AES-NI
 
+PROG=gpg
+if [ -n "$(which gpg2)" ]; then
+	PROG=gpg2
+fi
+
 if [ -n "$1" ]; then
-	gpg2 \
+	$PROG \
 		-d \
 		--batch \
 		--passphrase-file "$1" \
 		-
 	exit $?
 else
-	gpg2 -d -
+	$PROG -d -
 	exit $?
 fi
 

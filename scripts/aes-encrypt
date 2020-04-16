@@ -7,8 +7,13 @@ fi
 
 # gpg is slow, appears to not use AES-NI
 
+PROG=gpg
+if [ -n "$(which gpg2)" ]; then
+	PROG=gpg2
+fi
+
 if [ -n "$1" ]; then
-	gpg2 \
+	$PROG \
 		--compress-algo none \
 		--symmetric \
 		--s2k-mode 3 \
@@ -21,7 +26,7 @@ if [ -n "$1" ]; then
 		-
 	exit $?
 else
-	gpg2 \
+	$PROG \
 		--symmetric \
 		--s2k-mode 3 \
 		--s2k-count 65011712 \
