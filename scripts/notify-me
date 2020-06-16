@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+
+import sys, http.client, urllib, json, string
+
+def get_file_contents(filename):
+	with open(filename, 'r') as f:
+		return f.read().strip()
+
+def filter_nonprintable(chars):
+	return ''.join(filter(lambda x: x in string.printable, chars))
+
+def send_message(message):
+	app_token = get_file_contents("/home/bismith/.pushover/app_token_scripts")
+	user_key = get_file_contents("/home/bismith/.pushover/user_key")
+	# print("app_token [{}]".format(app_token))
+	# print("user_key [{}]".format(user_key))
+
+	conn = http.client.HTTPSConnection("api.pushover.net:443")
+	conn.request("POST", "/1/messages.json",
+	  urllib.parse.urlencode({
+	    "token": app_token,
+	    "user": user_key,
+	    "message": filter_nonprintable(message),
+	  }), { "Content-type": "application/x-www-form-urlencoded" })
+	response = conn.getresponse().read().decode('utf-8')
+	return json.dumps(response)
+
+def main():
+	try:
+		message = 'hello world this is Brandon'
+		# message = ' '.join(s for s in sys.argv[1:])
+		print("sending message:", message)
+		response = send_message(message)
+		print(response)
+		return 0
+	except Exception as e:
+		print("Exception occurred:", e)
+		return 1
+
+if __name__ == '__main__':
+	retval = main()
+	exit(retval)
