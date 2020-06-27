@@ -86,9 +86,7 @@ fi
 cd xxHash
 git pull
 make
-cd ~/bin
-ln -s ~/Programs/xxHash/xxhsum
-cd -
+cd ..
 
 if [ -f youtube-dl ]; then
 	mv youtube-dl youtube-dl-old
