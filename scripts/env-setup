@@ -90,6 +90,13 @@ cd ~/bin
 ln -s ~/Programs/xxHash/xxhsum
 cd -
 
+if [ -f youtube-dl ]; then
+	mv youtube-dl youtube-dl-old
+fi
+wget https://yt-dl.org/downloads/latest/youtube-dl
+chmod +x youtube-dl
+ln -s ~/Programs/youtube-dl ~/bin/youtube-dl
+
 # make-hosts --restore
 # make-hosts
 # echo "/etc/hosts:"
