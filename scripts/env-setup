@@ -1,84 +1,99 @@
 #!/bin/bash
 
+cd
 
 if [ -z "$(dpkg --get-selections | grep -v deinstall | grep libssl-dev)" ]; then
-	sudo apt-get update
-	if [ "$?" -ne "0" ]; then exit 1; fi
+	sudo apt update
 	sudo apt-get -y install build-essential libssl-dev
-	if [ "$?" -ne "0" ]; then exit 1; fi
 fi
-
 
 cd ~/Programs
 
-git clone https://github.com/VectorCell/misc-scripts.git
+
+if [ ! -d misc-scripts ]; then
+	git clone https://github.com/VectorCell/misc-scripts
+fi
 cd misc-scripts
 git pull
 yes | ./install.sh
 cd ..
 
-git clone https://github.com/VectorCell/dotfiles.git
+if [ ! -d dotfiles ]; then
+	git clone https://github.com/VectorCell/dotfiles
+fi
 cd dotfiles
 git pull
 yes | ./install.sh
 cd ..
 
-git clone https://github.com/VectorCell/pubkeys.git
+if [ ! -d pubkeys ]; then
+	git clone https://github.com/VectorCell/pubkeys
+fi
 cd pubkeys
 git pull
 ./add-keys.sh
 cd ..
 
-git clone https://github.com/VectorCell/tmux-configuration.git
+if [ ! -d tmux-configuration ]; then
+	git clone https://github.com/VectorCell/tmux-configuration
+fi
 cd tmux-configuration
 git pull
 yes | ./install.sh
 cd ..
 
-git clone https://github.com/VectorCell/sublime-config.git
+if [ ! -d sublime-config ]; then
+	git clone https://github.com/VectorCell/sublime-config
+fi
 cd sublime-config
 git pull
 ./install.sh
 cd ..
 
-git clone https://github.com/VectorCell/output-sparse.git
+if [ ! -d output-sparse ]; then
+	git clone https://github.com/VectorCell/output-sparse
+fi
 cd output-sparse
 git pull
 make
 make install
 cd ..
 
-git clone https://github.com/VectorCell/music-control.git
-cd music-control
-git pull
-./install.sh
-cd ..
+# git clone https://github.com/VectorCell/music-control
+# cd music-control
+# git pull
+# ./install.sh
+# cd ..
 
-git clone https://github.com/VectorCell/openssl-encrypt.git
-cd openssl-encrypt
-git pull
-./install.sh
-cd ..
+# git clone https://github.com/VectorCell/openssl-encrypt
+# cd openssl-encrypt
+# git pull
+# ./install.sh
+# cd ..
 
-git clone https://github.com/VectorCell/sumpass.git
+if [ ! -d sumpass ]; then
+	git clone https://github.com/VectorCell/sumpass
+fi
 cd sumpass
 git pull
 make
 make install
 cd ..
 
-git clone https://github.com/Cyan4973/xxHash.git
+if [ ! -d xxHash ]; then
+	git clone https://github.com/Cyan4973/xxHash
+fi
 cd xxHash
 git pull
 make
 cd ~/bin
 ln -s ~/Programs/xxHash/xxhsum
-cd ~/Programs
+cd -
 
-make-hosts --restore
-make-hosts
-echo "/etc/hosts:"
-cat /etc/hosts
+# make-hosts --restore
+# make-hosts
+# echo "/etc/hosts:"
+# cat /etc/hosts
 
 which output-sparse || echo "unable to find output-sparse"
 which sp || echo "unable to find sp"
@@ -86,3 +101,5 @@ which aes-encrypt || echo "unable to find aes-encrypt"
 which aes-decrypt || echo "unable to find aes-decrypt"
 which sump || echo "unable to find sump"
 which xxhsum || echo "unable to find xxhsum"
+
+echo done!
