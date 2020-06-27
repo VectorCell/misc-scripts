@@ -88,6 +88,9 @@ git pull
 make
 cd ..
 
+if [ -f ~/bin/youtube-dl ]; then
+	rm -f ~/bin/youtube-dl
+fi
 if [ -f youtube-dl ]; then
 	mv youtube-dl youtube-dl-old
 fi
