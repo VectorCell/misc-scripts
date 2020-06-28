@@ -86,6 +86,7 @@ fi
 cd xxHash
 git pull
 make
+ln -s ~/Programs/xxHash/xxhsum ~/bin/xxhsum
 cd ..
 
 if [ -f ~/bin/youtube-dl ]; then
