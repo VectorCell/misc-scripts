@@ -1,21 +1,35 @@
 #!/bin/bash
 
-mountdir="/mnt/ramdisk"
+MOUNTDIR="/mnt/ramdisk"
 
-size=1048
+PREFIX=m
+SIZE=1048
 if [ -n "$1" ]; then
-	size="$1"
+	SIZE="$1"
+	END=$(echo $SIZE | rev | colrm 2 | tr '[:upper:]' '[:lower:]')
+	if [ "$END" == "m" ]; then
+		PREFIX=m
+		SIZE=$(echo $SIZE | rev | colrm 1 1 | rev)
+	elif [ "$END" == "g" ]; then
+		PREFIX=g
+		SIZE=$(echo $SIZE | rev | colrm 1 1 | rev)
+	elif [ "$END" == "t" ]; then
+		# one day ...
+		PREFIX=t
+		SIZE=$(echo $SIZE | rev | colrm 1 1 | rev)
+	fi
+fi
+PREFIX_UPPER=$(echo $PREFIX | tr '[:lower:]' '[:upper:]')
+
+if [ ! -d $MOUNTDIR ]; then
+	sudo mkdir $MOUNTDIR
 fi
 
-if [ ! -d $mountdir ]; then
-	sudo mkdir $mountdir
-fi
-
-# mounts yoga share
-owner=$(stat -c "%u" $mountdir)
-if [ $(id -u) == $owner ]; then
-	echo "$mountdir already mounted, owned by $owner"
+OWNER=$(stat -c "%u" $MOUNTDIR)
+if [ $(id -u) == $OWNER ]; then
+	echo "$MOUNTDIR already mounted, owned by $OWNER"
 else
-	echo "mounting $mountdir with $size MB..."
-	sudo mount -t tmpfs -o size=${size}m tmpfs $mountdir -o uid=$(id -u),gid=$(id -g)
+	echo "mounting $MOUNTDIR with $SIZE ${PREFIX_UPPER}B..."
+	sudo mount -t tmpfs -o size=${SIZE}${PREFIX} tmpfs $MOUNTDIR -o uid=$(id -u),gid=$(id -g)
+	df -hT /mnt/ramdisk
 fi
