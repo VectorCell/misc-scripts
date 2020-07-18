@@ -3,7 +3,7 @@
 JUSTFILES="FALSE"
 DIR=.
 GREPSTRING="Stream"
-for ARG in $@; do
+for ARG in "$@"; do
 	if [ "$ARG" == "-d" ]; then
 		GREPSTRING="$GREPSTRING|Duration"
 	elif [ -d "$ARG" ]; then
