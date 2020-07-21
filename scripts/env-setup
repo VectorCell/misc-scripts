@@ -97,7 +97,9 @@ if [ -f youtube-dl ]; then
 fi
 wget https://yt-dl.org/downloads/latest/youtube-dl
 chmod +x youtube-dl
-ln -s ~/Programs/youtube-dl ~/bin/youtube-dl
+#ln -s ~/Programs/youtube-dl ~/bin/youtube-dl
+echo -e "#!/bin/bash\npython3 ~/Programs/youtube-dl \"\$@\"" > ~/bin/youtube-dl
+chmod +x ~/bin/youtube-dl
 
 # make-hosts --restore
 # make-hosts
