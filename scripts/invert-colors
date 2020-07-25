@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DISPLAY=:0.0
+
 if [ -z "$(which xcalib)" ]; then
 	sudo apt install -f xcalib
 fi
