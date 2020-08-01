@@ -111,13 +111,10 @@ chmod +x youtube-dl
 echo -e "#!/bin/bash\npython3 \$HOME/Programs/youtube-dl \"\$@\"" > ~/bin/youtube-dl
 chmod +x ~/bin/youtube-dl
 
-# make-hosts --restore
-# make-hosts
-# echo "/etc/hosts:"
-# cat /etc/hosts
+find ~/bin/ -xtype l | xargs unlink
 
 which output-sparse || echo "unable to find output-sparse"
-which sp || echo "unable to find sp"
+#which sp || echo "unable to find sp"
 which aes-encrypt || echo "unable to find aes-encrypt"
 which aes-decrypt || echo "unable to find aes-decrypt"
 which sump || echo "unable to find sump"
