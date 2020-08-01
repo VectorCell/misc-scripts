@@ -1,11 +1,4 @@
 #!/bin/bash
 
-IFNAME=$(ifconfig | grep -v "^ " | awk '{print $1}' | grep ^e)
-if [ -z "$IFNAME" ]; then
-	IFNAME=$(ifconfig | grep -v "^ " | awk '{print $1}' | grep ^w)
-fi
-if [ -n "$IFNAME" ]; then
-	sudo etherwake -i $IFNAME BC:30:5B:D8:AE:B9
-else
-	echo "unable to determine network interface"
-fi
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+$DIR/wake-mac BC:30:5B:D8:AE:B9

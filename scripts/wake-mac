@@ -1,0 +1,15 @@
+#!/bin/bash
+
+MAC=$1
+
+IFNAME=$(ip a | grep -v "^[[:space:]]" | awk '{print $2}' | tr -d : | grep ^e)
+if [ -z "$IFNAME" ]; then
+	IFNAME=$(ip a | grep -v "^[[:space:]]" | awk '{print $2}' | tr -d : | grep -v ^wg | grep ^w)
+fi
+
+if [ -n "$IFNAME" ]; then
+	sudo etherwake -i $IFNAME $MAC
+else
+	echo "unable to determine network interface"
+	exit 1
+fi

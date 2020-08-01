@@ -98,7 +98,7 @@ fi
 wget https://yt-dl.org/downloads/latest/youtube-dl
 chmod +x youtube-dl
 #ln -s ~/Programs/youtube-dl ~/bin/youtube-dl
-echo -e "#!/bin/bash\npython3 ~/Programs/youtube-dl \"\$@\"" > ~/bin/youtube-dl
+echo -e "#!/bin/bash\npython3 \$HOME/Programs/youtube-dl \"\$@\"" > ~/bin/youtube-dl
 chmod +x ~/bin/youtube-dl
 
 # make-hosts --restore
