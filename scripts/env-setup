@@ -21,7 +21,7 @@ cd ..
 # check if there's a new version of this script
 SUM_THIS=$(md5sum ${BASH_SOURCE[0]} | awk '{print $1}')
 SUM_THAT=$(md5sum ~/Programs/misc-scripts/scripts/env-setup | awk '{print $1}')
-if [ "$SUM_THIS" != "$SUM_THAT"]; then
+if [ "$SUM_THIS" != "$SUM_THAT" ]; then
 	cp ~/Programs/misc-scripts/scripts/env-setup /tmp/env-setup-2
 	/tmp/env-setup-2
 	rm /tmp/env-setup-2
