@@ -1,0 +1,82 @@
+#!/bin/bash
+#-------------------------------------------------------------------------------
+#
+# desktop
+# 
+# Author:   Mace Moneta
+# Version:  1.1
+# Created:  01/13/2010
+# Modified: 10/04/2010
+#
+# Description: Switch to the requested desktop
+# 
+#-------------------------------------------------------------------------------
+
+# this section added by Brandon Smith
+#-------------------------------------------------------------------------------
+#       ************************** Pre-run Check **********************
+#-------------------------------------------------------------------------------
+# wmctrl installed?
+if [ -w "$(which wmctrl)" ]; then
+   echo "ERROR: wmctrl not found"
+   exit
+fi
+
+#-------------------------------------------------------------------------------
+#       ************************** Variables **************************
+#-------------------------------------------------------------------------------
+# Desktop number passed?
+dt=$1
+if [ "$dt" == "" ]
+then
+   echo "Error: missing desktop number"
+   exit
+fi
+
+#-------------------------------------------------------------------------------
+#       ************************* Subroutines *************************
+#-------------------------------------------------------------------------------
+function dsktop () {
+   if [ $COMPIZ -eq 1 ]
+   then
+      # The target desktop number (begins with 0)
+      TVPN=$(( $1 % ${NF} ))
+      # The X coordinate of the target viewport
+      TVPX=$(( ${TVPN} * ${WW} ))
+      # Change to the target viewport
+      /usr/bin/wmctrl -o ${TVPX},0
+   else
+      /usr/bin/wmctrl -s $1
+   fi
+}
+
+#-------------------------------------------------------------------------------
+#       ************************* Mainline ****************************
+#-------------------------------------------------------------------------------
+
+# Disable globbing
+set -f noglob
+
+# Is compiz running?
+COMPIZ=0
+window_manager="`/usr/bin/wmctrl -m | /bin/grep -i compiz`"
+if [ "$window_manager" != "" ]
+then
+   COMPIZ=1
+fi
+
+# The information about the desktop
+INFO=$(/usr/bin/wmctrl -d | /bin/grep "\*")
+
+# The width of the desktop
+DW=$(echo "${INFO}" | /bin/awk '{sub(/x[0-9]+/, "", $4); print $4}')
+
+# The width of the workarea
+WW=$(echo "${INFO}" | /bin/awk '{sub(/x[0-9]+/, "", $9); print $9}')
+
+# The number of faces on the cube
+NF=$(($DW/$WW))
+
+dsktop $dt
+# /bin/sleep 2
+exit
