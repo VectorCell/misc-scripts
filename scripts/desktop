@@ -1,4 +1,4 @@
-#!/bin/bash
+#!bash
 #-------------------------------------------------------------------------------
 #
 # desktop
@@ -17,7 +17,7 @@
 #       ************************** Pre-run Check **********************
 #-------------------------------------------------------------------------------
 # display found?
-if [ -z "$DESKTOP" ]; then
+if [ -z "$DISPLAY" ]; then
    export DISPLAY=:0.0
 fi
 # wmctrl installed?
@@ -48,9 +48,9 @@ function dsktop () {
       # The X coordinate of the target viewport
       TVPX=$(( ${TVPN} * ${WW} ))
       # Change to the target viewport
-      /usr/bin/wmctrl -o ${TVPX},0
+      wmctrl -o ${TVPX},0
    else
-      /usr/bin/wmctrl -s $1
+      wmctrl -s $1
    fi
 }
 
@@ -63,24 +63,24 @@ set -f noglob
 
 # Is compiz running?
 COMPIZ=0
-window_manager="`/usr/bin/wmctrl -m | /bin/grep -i compiz`"
+window_manager="`wmctrl -m | grep -i compiz`"
 if [ "$window_manager" != "" ]
 then
    COMPIZ=1
 fi
 
 # The information about the desktop
-INFO=$(/usr/bin/wmctrl -d | /bin/grep "\*")
+INFO=$(wmctrl -d | grep "\*")
 
 # The width of the desktop
-DW=$(echo "${INFO}" | /bin/awk '{sub(/x[0-9]+/, "", $4); print $4}')
+DW=$(echo "${INFO}" | awk '{sub(/x[0-9]+/, "", $4); print $4}')
 
 # The width of the workarea
-WW=$(echo "${INFO}" | /bin/awk '{sub(/x[0-9]+/, "", $9); print $9}')
+WW=$(echo "${INFO}" | awk '{sub(/x[0-9]+/, "", $9); print $9}')
 
 # The number of faces on the cube
 NF=$(($DW/$WW))
 
 dsktop $dt
-# /bin/sleep 2
+# sleep 2
 exit
