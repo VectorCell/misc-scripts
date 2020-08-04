@@ -1,10 +1,12 @@
 #!/bin/bash
 
-/home/bismith/bin/desktop 0 &
-ssh tank.l.bismith.net "/home/bismith/bin/desktop 0" &
-ssh nissan.l.bismith.net "/home/bismith/bin/desktop 0" &
-ssh precisix.l.bismith.net "/home/bismith/bin/desktop 0" &
-ssh yogix.l.bismith.net "/home/bismith/bin/desktop 0" &
+DESKTOP=$(which desktop)
+
+$DESKTOP 0 &
+ssh tank.l.bismith.net "$DESKTOP 0" &
+ssh nissan.l.bismith.net "$DESKTOP 0" &
+ssh precisix.l.bismith.net "$DESKTOP 0" &
+ssh yogix.l.bismith.net "$DESKTOP 0" &
 
 wait
 echo "All children terminated."
