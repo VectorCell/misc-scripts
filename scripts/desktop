@@ -17,7 +17,7 @@
 #       ************************** Pre-run Check **********************
 #-------------------------------------------------------------------------------
 # wmctrl installed?
-if [ -w "$(which wmctrl)" ]; then
+if [ -z "$(which wmctrl)" ]; then
    echo "ERROR: wmctrl not found"
    exit
 fi
