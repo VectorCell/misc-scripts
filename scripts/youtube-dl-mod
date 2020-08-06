@@ -1,0 +1,25 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DATE="$(date +%Y-%m-%d_%H:%M:%S)"
+
+PROG=youtube-dl
+WAIT_DURATION=1
+EXIT_CODE=1
+
+while [ $EXIT_CODE -ne 0 ]; do
+	$PROG "$@"
+	EXIT_CODE=$?
+	echo "$PROG exited with code $EXIT_CODE"
+	if [ $EXIT_CODE -ne 0 ]; then
+		((WAIT_DURATION=WAIT_DURATION\*2))
+		if [ $WAIT_DURATION -ge 128 ]; then
+			echo "ERROR: wait duration exceeded threshold. Giving up!"
+			echo "$DATE :: FAILURE: $PROG $@" 1>&2
+			exit 1
+		fi
+		echo "waiting for $WAIT_DURATION seconds before trying again"
+		sleep $WAIT_DURATION
+	fi
+done
+echo "$DATE :: SUCCESS: $PROG $@" 1>&2
