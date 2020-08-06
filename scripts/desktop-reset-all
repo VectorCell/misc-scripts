@@ -2,11 +2,22 @@
 
 DESKTOP=$(which desktop)
 
-$DESKTOP 0 &
-ssh tank.l.bismith.net "$DESKTOP 0" &
-ssh nissan.l.bismith.net "$DESKTOP 0" &
-ssh precisix.l.bismith.net "$DESKTOP 0" &
-ssh yogix.l.bismith.net "$DESKTOP 0" &
+COMPUTERS=(
+	green
+	tank
+	nissan
+	precisix
+	yogix)
+
+for COMPUTER in ${COMPUTERS[@]}; do
+	if [ "$HOSTNAME" == "$COMPUTER" ]; then
+		echo "local:  $COMPUTER"
+		$DESKTOP 0 &
+	else
+		echo "remote: $COMPUTER"
+		ssh $COMPUTER.l.bismith.net "$DESKTOP 0" &
+	fi
+done
 
 wait
-echo "All children terminated."
+exit $?
