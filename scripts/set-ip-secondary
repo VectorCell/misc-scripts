@@ -1,5 +1,9 @@
 #!/bin/bash
 
+function current_ip_addr {
+	DEVICE=$1
+	ip addr show dev $DEVICE | grep inet | grep -v inet6 | awk '{print $2}' | head -n 1
+}
 
 function remove_ip_addr {
 	ADDRESS=$1
@@ -10,7 +14,7 @@ function remove_ip_addr {
 function set_ip_addr {
 	ADDRESS=$1
 	DEVICE=$2
-	CURRENT_IP=$(ip addr show dev $DEVICE | grep inet | awk '{print $2}')
+	CURRENT_IP=$(current_ip_addr $DEVICE)
 	if [ "$ADDRESS" == "$CURRENT_IP" ]; then
 		echo "device $DEVICE already has target IP $ADDRESS"
 		return
@@ -21,7 +25,7 @@ function set_ip_addr {
 	fi
 	sudo ip link set $DEVICE up
 	sudo ip addr add $ADDRESS dev $DEVICE
-	CURRENT_IP=$(ip addr show dev $DEVICE | grep inet | awk '{print $2}')
+	CURRENT_IP=$(current_ip_addr $DEVICE)
 	echo "The IP address for device $DEVICE is now $CURRENT_IP"
 }
 
