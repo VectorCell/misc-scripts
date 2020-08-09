@@ -29,6 +29,13 @@ function set_ip_addr {
 	echo "The IP address for device $DEVICE is now $CURRENT_IP"
 }
 
+if [ -n "$1" ]; then
+	echo "Calling with arguments: $@"
+	echo "Assuming this means to clear the configuration(s)..."
+	remove_ip_addr enp4s0f0
+	remove_ip_addr enp4s0f1
+fi
+
 if [ "green" == "$HOSTNAME" ]; then
 	echo "setting IP addresses for green"
 	set_ip_addr 172.16.1.1/24 enp4s0f0
