@@ -32,8 +32,13 @@ function set_ip_addr {
 if [ -n "$1" ]; then
 	echo "Calling with arguments: $@"
 	echo "Assuming this means to clear the configuration(s)..."
-	remove_ip_addr enp4s0f0
-	remove_ip_addr enp4s0f1
+	DEVICE=enp4s0f0
+	CURRENT_IP=$(current_ip_addr $DEVICE)
+	remove_ip_addr $CURRENT_IP $DEVICE
+	DEVICE=enp4s0f1
+	CURRENT_IP=$(current_ip_addr $DEVICE)
+	remove_ip_addr $CURRENT_IP $DEVICE
+	exit
 fi
 
 if [ "green" == "$HOSTNAME" ]; then
