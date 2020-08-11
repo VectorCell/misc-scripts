@@ -52,6 +52,13 @@ git pull
 yes | ./install.sh
 cd ..
 
+if [ ! -d install-scripts ]; then
+	git clone https://github.com/VectorCell/install-scripts
+fi
+cd install-scripts
+git pull
+cd ..
+
 if [ ! -d sublime-config ]; then
 	git clone https://github.com/VectorCell/sublime-config
 fi
