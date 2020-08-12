@@ -10,6 +10,8 @@ fi
 cd ~/Programs
 
 
+# misc-scripts
+
 if [ ! -d misc-scripts ]; then
 	git clone https://github.com/VectorCell/misc-scripts
 fi
@@ -18,15 +20,21 @@ git pull
 yes | ./install.sh
 cd ..
 
+
 # check if there's a new version of this script
+
 SUM_THIS=$(md5sum ${BASH_SOURCE[0]} | awk '{print $1}')
 SUM_THAT=$(md5sum ~/Programs/misc-scripts/scripts/env-setup | awk '{print $1}')
 if [ "$SUM_THIS" != "$SUM_THAT" ]; then
 	cp ~/Programs/misc-scripts/scripts/env-setup /tmp/env-setup-2
 	/tmp/env-setup-2
+	RETVAL=$?
 	rm /tmp/env-setup-2
-	exit
+	exit $RETVAL
 fi
+
+
+# dotfiles
 
 if [ ! -d dotfiles ]; then
 	git clone https://github.com/VectorCell/dotfiles
@@ -36,6 +44,9 @@ git pull
 yes | ./install.sh
 cd ..
 
+
+# pubkeys
+
 if [ ! -d pubkeys ]; then
 	git clone https://github.com/VectorCell/pubkeys
 fi
@@ -43,6 +54,9 @@ cd pubkeys
 git pull
 ./add-keys.sh
 cd ..
+
+
+# tmux-configuration
 
 if [ ! -d tmux-configuration ]; then
 	git clone https://github.com/VectorCell/tmux-configuration
@@ -52,12 +66,18 @@ git pull
 yes | ./install.sh
 cd ..
 
+
+# install-scripts
+
 if [ ! -d install-scripts ]; then
 	git clone https://github.com/VectorCell/install-scripts
 fi
 cd install-scripts
 git pull
 cd ..
+
+
+# sublime-config
 
 if [ ! -d sublime-config ]; then
 	git clone https://github.com/VectorCell/sublime-config
@@ -66,6 +86,9 @@ cd sublime-config
 git pull
 ./install.sh
 cd ..
+
+
+# output-sparse
 
 if [ ! -d output-sparse ]; then
 	git clone https://github.com/VectorCell/output-sparse
@@ -82,11 +105,8 @@ cd ..
 # ./install.sh
 # cd ..
 
-# git clone https://github.com/VectorCell/openssl-encrypt
-# cd openssl-encrypt
-# git pull
-# ./install.sh
-# cd ..
+
+# sumpass
 
 if [ ! -d sumpass ]; then
 	git clone https://github.com/VectorCell/sumpass
@@ -97,6 +117,9 @@ make
 make install
 cd ..
 
+
+# xxHash
+
 if [ ! -d xxHash ]; then
 	git clone https://github.com/Cyan4973/xxHash
 fi
@@ -106,19 +129,39 @@ make
 ln -s ~/Programs/xxHash/xxhsum ~/bin/xxhsum
 cd ..
 
+
+# youtube-dl
+
+unlink youtube-dl
 if [ -f ~/bin/youtube-dl ]; then
 	rm -f ~/bin/youtube-dl
 fi
-if [ -f youtube-dl ]; then
-	mv youtube-dl youtube-dl-old
+if [ -f youtube-dl-new ]; then
+	mv youtube-dl-new youtube-dl-old
 fi
-wget https://yt-dl.org/downloads/latest/youtube-dl
-chmod +x youtube-dl
-#ln -s ~/Programs/youtube-dl ~/bin/youtube-dl
-echo -e "#!/bin/bash\npython3 \$HOME/Programs/youtube-dl \"\$@\"" > ~/bin/youtube-dl
-chmod +x ~/bin/youtube-dl
+wget -O youtube-dl-new "https://yt-dl.org/downloads/latest/youtube-dl"
+RETVAL=$?
+if [ $RETVAL == 0 ]; then
+	chmod +x youtube-dl-new
+	echo -e "#!/bin/bash\npython3 \$HOME/Programs/youtube-dl \"\$@\"" > ~/bin/youtube-dl
+	chmod +x ~/bin/youtube-dl
+else
+	rm -f youtube-dl-new
+	echo "WARNING: Unable to download latest youtube-dl, using previous version"
+fi
+if [ -e youtube-dl-new ]; then
+	ln -s youtube-dl-new youtube-dl
+elif [ -e youtube-dl-old ]; then
+	ln -s youtube-dl-old youtube-dl
+else
+	echo -e "#!/bin/bash\necho ERROR: \"youtube-dl not present!\"" > youtube-dl
+	chmod +x youtube-dl
+fi
 
-find ~/bin/ -xtype l | xargs unlink
+
+# cleans up broken links in ~/bin
+find ~/bin/ -xtype l | xargs unlink 2> /dev/null
+
 
 which output-sparse || echo "unable to find output-sparse"
 #which sp || echo "unable to find sp"
@@ -127,4 +170,4 @@ which aes-decrypt || echo "unable to find aes-decrypt"
 which sump || echo "unable to find sump"
 which xxhsum || echo "unable to find xxhsum"
 
-echo done!
+echo "Done!"
