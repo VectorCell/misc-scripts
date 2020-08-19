@@ -1,0 +1,36 @@
+#!/bin/bash
+
+NAME=$1
+if [ -z "$NAME" ]; then
+	echo "USAGE: wake HOSTNAME"
+	exit 1
+fi
+
+MAC="unknown"
+
+case "$NAME" in
+	green)
+		MAC=D8:CB:8A:C6:C0:0F
+		;;
+	tank)
+		MAC=4C:CC:6A:89:15:FD
+		;;
+	nissan)
+		MAC=1C:1B:0D:96:C0:CC
+		;;
+	precisix)
+		MAC=5C:26:0A:31:DF:37
+		;;
+	lotus)
+		MAC=B8:AE:ED:71:BC:0B
+		;;
+	leander)
+		MAC=BC:30:5B:D8:AE:B9
+		;;
+	*)
+		echo "ERROR: hostname $NAME not found!"
+		exit 1
+		;;
+esac
+
+wake-mac $MAC
