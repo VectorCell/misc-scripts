@@ -118,6 +118,18 @@ make install
 cd ..
 
 
+# split-combine
+
+if [ ! -d split-combine ]; then
+	git clone https://github.com/VectorCell/split-combine
+fi
+cd split-combine
+git pull
+make
+make install
+cd ..
+
+
 # xxHash
 
 if [ ! -d xxHash ]; then
