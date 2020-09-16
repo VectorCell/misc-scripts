@@ -1,0 +1,65 @@
+#!/bin/bash
+
+N_DEFAULT_ROUTES=$(ip route | grep ^default | wc -l)
+if [ "$N_DEFAULT_ROUTES" != "1" ]; then
+	echo "ERROR: There must be exactly one default route, but there are $N_DEFAULT_ROUTES"
+	echo "The output of \"ip route:\""
+	ip route
+	exit 1
+fi
+
+INTERFACE=$(ip route | grep ^default | awk '{print $5}')
+IP_ADDRESS=$(ip addr show dev $INTERFACE | grep inet | grep -v inet6 | awk '{print $2}')
+IP_ADDRESS_PART1=$(echo $IP_ADDRESS | tr './' '  ' | awk '{print $1}')
+IP_ADDRESS_PART2=$(echo $IP_ADDRESS | tr './' '  ' | awk '{print $2}')
+IP_ADDRESS_PART3=$(echo $IP_ADDRESS | tr './' '  ' | awk '{print $3}')
+IP_ADDRESS_PART4=$(echo $IP_ADDRESS | tr './' '  ' | awk '{print $4}')
+IP_ADDRESS_PART5=$(echo $IP_ADDRESS | tr './' '  ' | awk '{print $5}')
+PREFIX="$IP_ADDRESS_PART1.$IP_ADDRESS_PART2"
+
+# TRUE if localhost is on the main home LAN, false otherwise
+#HAS_HOME=$([ "$PREFIX" == "10.0" ] && [ "$IP_ADDRESS_PART5" == "16" ] && echo TRUE || echo FALSE)
+HAS_HOME=$([ -n "$(ip route | grep ^10\\.0\\.0\\.0/16)" ] && echo TRUE || echo FALSE)
+HAS_SECONDARY=$([ -n "$(ip route | grep ^172\\.16\\.1\\.0/24)" ] && echo TRUE || echo FALSE)
+HAS_VPN=$([ -n "$(ip route | grep ^10\\.48\\.0\\.0/16)" ] && echo TRUE || echo FALSE)
+
+# echo "HAS_HOME:      $HAS_HOME"
+# echo "HAS_SECONDARY: $HAS_SECONDARY"
+# echo "HAS_VPN:       $HAS_VPN"
+
+if [ "$HAS_SECONDARY" == "TRUE" ]; then
+	echo "Using secondary LAN, subnet 172.16.1.0/24"
+	GREEN=172.16.1.1
+	TANK=172.16.1.2
+	NISSAN=172.16.1.3
+elif [ "$HAS_HOME" == "TRUE" ]; then
+	echo "Using primary LAN, subnet 10.0.0.0/16"
+	GREEN=10.0.1.100
+	TANK=10.0.1.101
+	NISSAN=10.0.1.102
+elif [ "$HAS_VPN" == "TRUE" ]; then
+	echo "Using VPN, subnet 10.48.0.0/16"
+	GREEN=10.48.1.100
+	TANK=10.48.1.101
+	NISSAN=10.48.1.102
+fi
+
+if [ "$HOSTNAME" != "green" ]; then
+	mountssh-readonly $GREEN /tank /mnt/tank
+	mountssh-readonly $GREEN /store /mnt/store
+else
+	echo "Skipping $HOSTNAME (that's you!)"
+fi
+
+if [ "$HOSTNAME" != "tank" ]; then
+	mountssh-readonly $TANK /ssd /mnt/tank-ssd
+	mountssh-readonly $TANK /intel /mnt/tank-intel
+else
+	echo "Skipping $HOSTNAME (that's you!)"
+fi
+
+if [ "$HOSTNAME" != "nissan" ]; then
+	mountssh-readonly $NISSAN /internal /mnt/nissan-internal
+else
+	echo "Skipping $HOSTNAME (that's you!)"
+fi
