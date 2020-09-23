@@ -1,3 +1,20 @@
 #!/bin/bash
 
-sudo apt update && sudo apt -y upgrade && sudo apt -y dist-upgrade && sudo apt -y autoremove && echo DONE
+sudo apt update \
+	&& sudo apt -y upgrade \
+	&& sudo apt -y dist-upgrade \
+	&& sudo apt -y autoremove \
+	&& echo DONE
+
+if [ $? -ne 0 ]; then
+	echo "ERROR: update did not run successfully" 1>&2
+	exit 1
+fi
+
+if [ -e /var/run/reboot-required ]; then
+	echo
+	echo "This machine ($HOSTNAME) must be rebooted in order to complete the update process."
+	echo
+	echo "*** System restart required ***"
+	echo
+fi
