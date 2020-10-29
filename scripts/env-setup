@@ -132,14 +132,14 @@ cd ..
 
 # xxHash
 
-if [ ! -d xxHash ]; then
-	git clone https://github.com/Cyan4973/xxHash
-fi
-cd xxHash
-git pull
-make
-ln -s ~/Programs/xxHash/xxhsum ~/bin/xxhsum
-cd ..
+#if [ ! -d xxHash ]; then
+#	git clone https://github.com/Cyan4973/xxHash
+#fi
+#cd xxHash
+#git pull
+#make
+#ln -s ~/Programs/xxHash/xxhsum ~/bin/xxhsum
+#cd ..
 
 
 # youtube-dl
