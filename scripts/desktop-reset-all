@@ -4,8 +4,6 @@ DESKTOP=$(which desktop)
 
 COMPUTERS=(
 	green
-	tank
-	nissan
 	precisix
 	yogix)
 
