@@ -3,9 +3,10 @@
 DESKTOP=$(which desktop)
 
 COMPUTERS=(
-	green
-	precisix
-	yogix)
+	green.l.bismith.net
+	precisix.l.bismith.net
+	yogix.l.bismith.net
+	lbbtwo.lan)
 
 for COMPUTER in ${COMPUTERS[@]}; do
 	if [ "$HOSTNAME" == "$COMPUTER" ]; then
@@ -13,7 +14,7 @@ for COMPUTER in ${COMPUTERS[@]}; do
 		$DESKTOP 0 &
 	else
 		echo "remote: $COMPUTER"
-		ssh $COMPUTER.l.bismith.net "$DESKTOP 0" &
+		ssh $COMPUTER "$DESKTOP 0" &
 	fi
 done
 
