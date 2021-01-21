@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sensors
+lsblk | grep ^sd | awk '{print $1}' | while read DRIVE; do
+	sudo hddtemp /dev/$DRIVE 2> /dev/null
+done | grep °C$
