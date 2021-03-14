@@ -15,6 +15,7 @@ if [ -n "$1" ]; then
 		-
 	exit $?
 else
+	1>&2 echo "Prompting for password on desktop (GUI) (if applicable) ..."
 	$PROG -d -
 	exit $?
 fi

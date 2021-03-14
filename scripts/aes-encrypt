@@ -26,6 +26,9 @@ if [ -n "$1" ]; then
 		-
 	exit $?
 else
+
+	1>&2 echo "Prompting for password on desktop (GUI) ..."
+
 	$PROG \
 		--symmetric \
 		--s2k-mode 3 \
