@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$1" != "-f" ]; then
+	echo "ERROR: cowardly refusing to send the shutdown signal to all running VMs."
+	echo "To override this cowardice, use the -f option with this script."
+	exit 1
+fi
+
+for VMNAME in $(VBoxManage list runningvms | tr -d '"' | awk '{print $1}'); do
+	VBoxManage controlvm "$VMNAME" acpipowerbutton
+done
