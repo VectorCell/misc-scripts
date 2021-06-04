@@ -1,0 +1,38 @@
+#!/bin/bash
+
+PREFIX=m
+SIZE=1024
+if [ -n "$1" ]; then
+	SIZE="$1"
+	END=$(echo $SIZE | rev | colrm 2 | tr '[:upper:]' '[:lower:]')
+	if [ "$END" == "m" ]; then
+		PREFIX=m
+		SIZE=$(echo $SIZE | rev | colrm 1 1 | rev)
+	elif [ "$END" == "g" ]; then
+		PREFIX=g
+		SIZE=$(echo $SIZE | rev | colrm 1 1 | rev)
+	elif [ "$END" == "t" ]; then
+		# one day ...
+		PREFIX=t
+		SIZE=$(echo $SIZE | rev | colrm 1 1 | rev)
+	fi
+fi
+PREFIX_UPPER=$(echo $PREFIX | tr '[:lower:]' '[:upper:]')
+
+if [ "$PREFIX" == "m" ]; then
+	SIZE=$(expr $SIZE \* 1048576)
+elif [ "$PREFIX" == "g" ]; then
+	SIZE=$(expr $SIZE \* 1073741824)
+elif [ "$PREFIX" == "t" ]; then
+	SIZE=$(expr $SIZE \* 1099511627776)
+fi
+
+if [ -z "$SIZE" ]; then
+	1>&2 echo "ERROR: bad SIZE [$SIZE]"
+	exit 1
+fi
+
+echo "setting zfc_arc_max to $SIZE ..."
+echo "options zfs zfs_arc_max=$SIZE" | sudo tee -a /etc/modprobe.d/zfs.conf
+echo $SIZE | sudo tee /sys/module/zfs/parameters/zfs_arc_max
+sudo update-initramfs -u && echo DONE
