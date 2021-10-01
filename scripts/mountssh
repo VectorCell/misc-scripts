@@ -19,6 +19,6 @@ else
 	else
 		echo "mounting $mountdir ($server:$serverdir) ..."
 		#sudo sshfs ${user}@${server}:$serverdir $mountdir -o uid=$(id -u $user),gid=$(id -g $user),reconnect,allow_other,IdentityFile=/home/$user/.ssh/id_rsa
-		sudo sshfs ${user}@${server}:$serverdir $mountdir -o uid=$(id -u $user),gid=$(id -g $user),allow_other,IdentityFile=/home/$user/.ssh/id_rsa
+		sudo sshfs ${user}@${server}:$serverdir $mountdir -o uid=$(id -u $user),gid=$(id -g $user),allow_other,IdentityFile=/home/$user/.ssh/id_rsa,Ciphers=aes128-ctr,Compression=no
 	fi
 fi
