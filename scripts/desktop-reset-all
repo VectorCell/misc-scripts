@@ -3,9 +3,9 @@
 DESKTOP=$(which desktop)
 
 COMPUTERS=(
-	green.l.bismith.net
-	precisix.l.bismith.net
-	yogix.l.bismith.net
+	green.lan
+	precisix.lan
+	yogix.lan
 	lbbtwo.lan)
 
 for COMPUTER in ${COMPUTERS[@]}; do
