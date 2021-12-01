@@ -144,30 +144,37 @@ cd ..
 
 # youtube-dl
 
-unlink youtube-dl
-if [ -f ~/bin/youtube-dl ]; then
-	rm -f ~/bin/youtube-dl
-fi
-if [ -f youtube-dl-new ]; then
-	mv youtube-dl-new youtube-dl-old
-fi
-wget -O youtube-dl-new "https://yt-dl.org/downloads/latest/youtube-dl"
+# unlink youtube-dl
+# if [ -f ~/bin/youtube-dl ]; then
+# 	rm -f ~/bin/youtube-dl
+# fi
+# if [ -f youtube-dl-new ]; then
+# 	mv youtube-dl-new youtube-dl-old
+# fi
+# wget -O youtube-dl-new "https://yt-dl.org/downloads/latest/youtube-dl"
+# RETVAL=$?
+# if [ $RETVAL == 0 ]; then
+# 	chmod +x youtube-dl-new
+# 	echo -e "#!/bin/bash\npython3 \$HOME/Programs/youtube-dl \"\$@\"" > ~/bin/youtube-dl
+# 	chmod +x ~/bin/youtube-dl
+# else
+# 	rm -f youtube-dl-new
+# 	echo "WARNING: Unable to download latest youtube-dl, using previous version"
+# fi
+# if [ -e youtube-dl-new ]; then
+# 	ln -s youtube-dl-new youtube-dl
+# elif [ -e youtube-dl-old ]; then
+# 	ln -s youtube-dl-old youtube-dl
+# else
+# 	echo -e "#!/bin/bash\necho ERROR: \"youtube-dl not present!\"" > youtube-dl
+# 	chmod +x youtube-dl
+# fi
+wget -O yt-dlp-new "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
 RETVAL=$?
 if [ $RETVAL == 0 ]; then
-	chmod +x youtube-dl-new
-	echo -e "#!/bin/bash\npython3 \$HOME/Programs/youtube-dl \"\$@\"" > ~/bin/youtube-dl
-	chmod +x ~/bin/youtube-dl
-else
-	rm -f youtube-dl-new
-	echo "WARNING: Unable to download latest youtube-dl, using previous version"
-fi
-if [ -e youtube-dl-new ]; then
-	ln -s youtube-dl-new youtube-dl
-elif [ -e youtube-dl-old ]; then
-	ln -s youtube-dl-old youtube-dl
-else
-	echo -e "#!/bin/bash\necho ERROR: \"youtube-dl not present!\"" > youtube-dl
-	chmod +x youtube-dl
+	chmod +x yt-dlp-new
+	mv yt-dlp-new yt-dlp
+	echo -e "#!/bin/bash\npython3 \$HOME/Programs/yt-dlp \"\$@\"" > ~/bin/youtube-dl
 fi
 
 
