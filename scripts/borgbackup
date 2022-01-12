@@ -1,0 +1,65 @@
+#!/bin/bash
+
+
+BORG=$HOME/Programs/borg/1.1.17/borg-linux64
+
+REPOHOST=$1
+REPOSDIRREMOTE=$2
+REPOSDIRLOCAL=$3
+REPO=$4
+DIR=$5
+
+if [ -z "$REPOHOST" ] \
+|| [ -z "$REPOSDIRREMOTE" ] \
+|| [ -z "$REPOSDIRLOCAL" ] \
+|| [ -z "$REPO" ] \
+|| [ -z "$DIR" ]; then
+	echo "ERROR: missing arguments"
+	echo
+	echo "usage: borgbackup REPOHOST REPOSDIRREMOTE REPOSDIRLOCAL REPO DIR"
+	echo
+	echo "    REPOHOST: host name of the machine where the repo is located"
+	echo "    REPOSDIRREMOTE: the path on REPOHOST where the repo is located"
+	echo "                    (not including the repo directory itself)"
+	echo "    REPOSDIRLOCAL: the path to mount REPOSDIRREMOTE on the local machine"
+	echo "    REPO: the name of the directory containing the borg repo"
+	echo "    DIR: the directory to be backed up"
+	echo
+	echo "example: borgbackup tank.lan /intel/borgrepos /mnt/borgrepos dock-data /data"
+	echo
+	exit 1
+fi
+
+# check if borg executable is present and valid
+if [ -z "$(file $BORG | grep ELF)" ]; then
+	1>&2 echo "ERROR: borg executable not found or invalid"
+	exit 1
+fi
+
+/home/bismith/bin/mountssh $REPOHOST $REPOSDIRREMOTE $REPOSDIRLOCAL
+if [ -z "$(df -T $REPOSDIRLOCAL 2> /dev/null | grep sshfs)" ]; then
+	1>&2 echo "ERROR: $REPOSDIRLOCAL not mounted"
+	exit 1
+fi
+cd $REPOSDIRLOCAL
+
+# creates repo if it doesn't already exist
+if [ ! -d $REPO ]; then
+	echo "repo $REPO no found, creating ..."
+	$BORG init --encryption=none $REPO
+else
+	echo "REPO $REPO already exists"
+fi
+
+# makes backup
+BACKUPNAME=$(date +"%F_%R" | tr -d ':')
+sudo tar -cv $DIR | $BORG create --stdin-name="data_${BACKUPNAME}.tar" $REPO::$BACKUPNAME -
+
+# cleans up
+cd
+while [ -n "$(df -T $REPOSDIRLOCAL 2> /dev/null | grep sshfs)" ]; do
+	sleep 1
+	sudo umount $REPOSDIRLOCAL
+done
+
+echo "done with backup up $DIR"
