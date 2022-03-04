@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 BORG=$HOME/Programs/borg/1.1.17/borg-linux64
 
 REPOHOST=$1
@@ -8,6 +7,13 @@ REPOSDIRREMOTE=$2
 REPOSDIRLOCAL=$3
 REPO=$4
 DIR=$5
+
+# retention options
+KEEP_HOURLY=24
+KEEP_DAILY=7
+KEEP_WEEKLY=4
+KEEP_MONTHLY=12
+KEEP_YEARLY=5
 
 if [ -z "$REPOHOST" ] \
 || [ -z "$REPOSDIRREMOTE" ] \
@@ -54,6 +60,17 @@ fi
 # makes backup
 BACKUPNAME=$(date +"%F_%R" | tr -d ':')
 sudo tar -cv $DIR | $BORG create --stdin-name="data_${BACKUPNAME}.tar" $REPO::$BACKUPNAME -
+
+# performs data aging
+# keep-last guarantees that the last 10 backups will be retained
+$BORG prune \
+	--keep-last    10 \
+	--keep-hourly  $KEEP_HOURLY \
+	--keep-daily   $KEEP_DAILY \
+	--keep-weekly  $KEEP_WEEKLY \
+	--keep-monthly $KEEP_MONTHLY \
+	--keep-yearly  $KEEP_YEARLY \
+	$REPO
 
 # cleans up
 cd

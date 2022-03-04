@@ -5,8 +5,7 @@ DESKTOP=$(which desktop)
 COMPUTERS=(
 	green.lan
 	precisix.lan
-	yogix.lan
-	lbbtwo.lan)
+	yogix.lan)
 
 for COMPUTER in ${COMPUTERS[@]}; do
 	if [ "$HOSTNAME" == "$COMPUTER" ]; then
