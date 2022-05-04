@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -e /var/run/reboot-required ]; then
+	echo "reboot required"
+	exit 0
+else
+	echo "reboot not required"
+	exit 1
+fi
