@@ -24,6 +24,9 @@ case "$NAME" in
 	lotus)
 		MAC=B8:AE:ED:71:BC:0B
 		;;
+	wyse)
+		MAC=54:48:10:AD:83:9B
+		;;
 	leander)
 		MAC=BC:30:5B:D8:AE:B9
 		;;

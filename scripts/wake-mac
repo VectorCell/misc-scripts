@@ -2,7 +2,8 @@
 
 MAC=$1
 
-IFNAME=$(ip r | grep ^default | awk '{print $5}')
+#IFNAME=$(ip r | grep ^default | awk '{print $5}')
+IFNAME=$(ip a | grep "^2\:" | tr -d ':' | awk '{print $2}')
 
 if [ -n "$IFNAME" ]; then
 	echo etherwake -i $IFNAME $MAC
