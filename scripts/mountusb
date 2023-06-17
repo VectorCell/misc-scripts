@@ -72,10 +72,10 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 
 		if [ $TYPE == vfat ] || [ $TYPE == ntfs ] || [ $TYPE == exfat ]; then
 			if [ $ISTEST == "true" ]; then
-				echo sudo mount -t $TYPE $DISK $WHERE/$LABEL -o uid=$(id -u),gid=$(id -g),utf8,dmask=022,fmask=133
+				echo sudo mount -t $TYPE $DISK $WHERE/$LABEL -o uid=$(id -u),gid=$(id -g),utf8,dmask=022,fmask=133,flush
 				echo
 			else
-				sudo mount -t $TYPE $DISK $WHERE/$LABEL -o uid=$(id -u),gid=$(id -g),utf8,dmask=022,fmask=133 2> /dev/null
+				sudo mount -t $TYPE $DISK $WHERE/$LABEL -o uid=$(id -u),gid=$(id -g),utf8,dmask=022,fmask=133,flush 2> /dev/null
 			fi
 		else
 			if [ $ISTEST == "true" ]; then
