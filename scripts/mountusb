@@ -23,6 +23,11 @@ sudo blkid | grep -vE "System|UDF" | while read line; do
 	LABEL=$(echo "$line" | tr ' =' '\n ' | grep LABEL | tr -d '"' | awk '{print $2}' | head -n 1)
 	TYPE=$(echo "$line" | tr ' =' '\n ' | grep TYPE | grep -v SEC_TYPE | tr -d '"' | awk '{print $2}' | head -n 1)
 
+	if [ "$LABEL" == "VTOYEFI" ]; then
+		# skips mounting Ventoy EFI partition
+		continue
+	fi
+
 	# mount each disk
 	if [ -n "$LABEL" ]; then
 
